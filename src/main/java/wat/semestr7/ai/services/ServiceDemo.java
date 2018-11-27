@@ -1,6 +1,7 @@
 package wat.semestr7.ai.services;
 
 import org.hibernate.Hibernate;
+import org.hibernate.context.spi.CurrentSessionContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wat.semestr7.ai.repositories.*;
@@ -12,11 +13,11 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Transactional
 @Service
-public class ServiceDemo
-{
+public class ServiceDemo {
+
     private ConcertRepository concertRepository;
     private ConcertRoomRepository concertRoomRepository;
     private PerformersRepository performersRepository;
@@ -48,10 +49,11 @@ public class ServiceDemo
         Concert concert = getConcert(concertRoom,performers,repertoire);
         concertRepository.save(concert);
     }
-    @PostConstruct
-    @Transactional
-    void testConcertRoom()
+
+    @Transactional()
+    public List<String> testConcertRoom()
     {
+
         ConcertRoom concertRoom = new ConcertRoom();
         concertRoom.setConcertRoomName("Sala koncertowa");
         concertRoom.setRentCosts(new BigDecimal("2000.00"));
@@ -67,13 +69,12 @@ public class ServiceDemo
         }
         concertRoom.setSeats(seats);
         concertRoomRepository.save(concertRoom);
-
         ConcertRoom cr = concertRoomRepository.findById(1).get();
         System.out.println(cr);
-
+        //throw new RuntimeException();
         Hibernate.initialize(cr.getSeats());
 
-        cr.getSeats().forEach(System.out::println);
+        return cr.getSeats().stream().map(s->s.toString()).collect(Collectors.toList());
     }
 
     private List<PieceOfMusic> getRepertoire() {
