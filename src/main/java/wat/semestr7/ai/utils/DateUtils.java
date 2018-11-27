@@ -1,4 +1,4 @@
-package wat.semestr7.ai.demo.utils;
+package wat.semestr7.ai.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

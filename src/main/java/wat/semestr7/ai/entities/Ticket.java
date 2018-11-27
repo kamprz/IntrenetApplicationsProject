@@ -1,4 +1,4 @@
-package wat.semestr7.ai.demo.entities;
+package wat.semestr7.ai.entities;
 
 import lombok.Data;
 import lombok.ToString;

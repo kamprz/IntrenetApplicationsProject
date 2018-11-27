@@ -1,10 +1,9 @@
-package wat.semestr7.ai.demo.services;
+package wat.semestr7.ai.services;
 
 import org.springframework.stereotype.Service;
-import wat.semestr7.ai.demo.entities.Budget;
-import wat.semestr7.ai.demo.repositories.BudgetRepository;
+import wat.semestr7.ai.entities.Budget;
+import wat.semestr7.ai.repositories.BudgetRepository;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 
 @Service

@@ -1,11 +1,10 @@
-package wat.semestr7.ai.demo.entities;
+package wat.semestr7.ai.entities;
 
 import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data

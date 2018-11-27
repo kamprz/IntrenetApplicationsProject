@@ -1,11 +1,11 @@
-package wat.semestr7.ai.demo.services;
+package wat.semestr7.ai.services;
 
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wat.semestr7.ai.demo.entities.*;
-import wat.semestr7.ai.demo.repositories.*;
-import wat.semestr7.ai.demo.utils.DateUtils;
+import wat.semestr7.ai.repositories.*;
+import wat.semestr7.ai.utils.DateUtils;
+import wat.semestr7.ai.entities.*;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
