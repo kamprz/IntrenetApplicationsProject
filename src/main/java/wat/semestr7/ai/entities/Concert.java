@@ -20,6 +20,7 @@ public class Concert
     @Temporal(TemporalType.DATE)
     private Date date;
     private BigDecimal additionalOrganisationCosts;
+    private BigDecimal ticketCost;
 
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
@@ -32,7 +33,7 @@ public class Concert
     private Performers concertPerformers;
 
     @ToString.Exclude
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinTable(name = "repertoire",
             joinColumns = @JoinColumn(name = "idConcert"),
             inverseJoinColumns = @JoinColumn(name = "idPiece")

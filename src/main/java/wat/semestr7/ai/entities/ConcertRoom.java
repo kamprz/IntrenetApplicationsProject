@@ -1,5 +1,6 @@
 package wat.semestr7.ai.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
@@ -15,9 +16,11 @@ public class ConcertRoom
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idConcertRoom;
     private String concertRoomName;
+    private String adress;
     private BigDecimal rentCosts;
+    @JsonIgnore
     @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "concertRoom",
+    @OneToMany(mappedBy = "concertRoom",
             cascade = CascadeType.ALL)
     private List<Seat> seats;
 }

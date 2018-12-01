@@ -13,7 +13,6 @@ public class Ticket
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idTicket;
-    private BigDecimal price;
 
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})

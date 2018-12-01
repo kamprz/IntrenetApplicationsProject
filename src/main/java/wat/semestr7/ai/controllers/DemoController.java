@@ -2,6 +2,7 @@ package wat.semestr7.ai.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.Seat;
 import wat.semestr7.ai.services.ServiceDemo;
 
@@ -18,8 +19,10 @@ public class DemoController
     }
 
     @GetMapping("demo")
-    public List<String> demo()
+    public Concert demo()
     {
-        return serviceDemo.testConcertRoom();
+        return serviceDemo.populate();
+
     }
+
 }
