@@ -23,7 +23,6 @@ public class SeatController
     @GetMapping("concerts/{id}/freeSeats")
     public ResponseEntity<List<FreeSeatDTO>> getFreeSeatsOnConcert(@PathVariable("id") int concertId)
     {
-        System.out.println(seatService.getSeatByFloorRowPosition(0,1,1));
         return new ResponseEntity<>(seatService.getFreeSeatsOnConcert(concertId), HttpStatus.OK);
     }
 }

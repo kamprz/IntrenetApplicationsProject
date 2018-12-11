@@ -24,7 +24,7 @@ public class ConcertController
     }
 
     @GetMapping("/concerts")
-    public ResponseEntity<List<ConcertDTO>> getAllConcerts()
+    public ResponseEntity<List<ConcertDetailedDTO>> getAllConcerts()
     {
         return new ResponseEntity<>(service.getAllConcerts(), HttpStatus.OK);
     }

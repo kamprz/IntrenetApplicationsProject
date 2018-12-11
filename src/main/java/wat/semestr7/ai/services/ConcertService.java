@@ -16,9 +16,9 @@ public class ConcertService
         this.repo = repo;
     }
 
-    public List<ConcertDTO> getAllConcerts()
+    public List<ConcertDetailedDTO> getAllConcerts()
     {
-        List<ConcertDTO> result = repo.findAllConcerts();
+        List<ConcertDetailedDTO> result = repo.findAllConcerts();
         return result;
     }
 

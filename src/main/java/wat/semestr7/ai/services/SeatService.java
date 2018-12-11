@@ -20,8 +20,8 @@ public class SeatService
     {
         return seatRepository.getAllFreeSeatsOnConcert(idConcert);
     }
-    public Seat getSeatByFloorRowPosition(int floor, int row, int position)
+    public Seat getSeatByRowAndPosition(int row, int position)
     {
-        return seatRepository.findFirstByFloorAndRowAndPosition(floor,row,position);
+        return seatRepository.findFirstByRowAndPosition(row,position);
     }
 }

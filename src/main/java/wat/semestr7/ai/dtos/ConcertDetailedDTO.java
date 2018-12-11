@@ -16,16 +16,16 @@ public class ConcertDetailedDTO
     private Date date;
     private List<PieceOfMusicDTO> repertoire;
     private String concertRoomName;
-    private String concertRoomAdress;
+    private String concertRoomAddress;
     private String performersDetails;
     private BigDecimal ticketCost;
 
-    public ConcertDetailedDTO(int concertId, String concertTitle, Date date, String concertRoomName, String concertRoomAdress, String performersDetails, BigDecimal ticketCost) {
+    public ConcertDetailedDTO(int concertId, String concertTitle, Date date, String concertRoomName, String concertRoomAddress, String performersDetails, BigDecimal ticketCost) {
         this.concertId = concertId;
         this.concertTitle = concertTitle;
         this.date = date;
         this.concertRoomName = concertRoomName;
-        this.concertRoomAdress = concertRoomAdress;
+        this.concertRoomAddress = concertRoomAddress;
         this.performersDetails = performersDetails;
         this.ticketCost = ticketCost;
     }

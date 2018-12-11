@@ -14,7 +14,6 @@ public class Seat
     private int idSeat;
     private int row;
     private int position;
-    private int floor;
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinColumn(name="idConcertRoom")

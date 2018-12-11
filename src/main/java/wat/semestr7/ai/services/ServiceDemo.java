@@ -79,12 +79,11 @@ public class ServiceDemo {
         ConcertRoom concertRoom = new ConcertRoom();
         concertRoom.setConcertRoomName("Sala koncertowa Filharmonii Narodowej");
         concertRoom.setRentCosts(new BigDecimal("2000.00"));
-        concertRoom.setAdress("Warszawa ul. Jasna 5");
+        concertRoom.setAddress("Warszawa ul. Jasna 5");
         List<Seat> seats = new LinkedList<>();
         for(int i=0;i<10;i++) for(int j=0;j<10;j++)
         {
             Seat s = new Seat();
-            s.setFloor(0);
             s.setConcertRoom(concertRoom);
             s.setRow(i);
             s.setPosition(j);

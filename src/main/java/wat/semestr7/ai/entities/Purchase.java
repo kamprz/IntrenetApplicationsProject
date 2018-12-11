@@ -18,8 +18,4 @@ public class Purchase
     @OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
     private List<Ticket> tickets;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name = "login")
-    private Client client;
 }

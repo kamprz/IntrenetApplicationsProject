@@ -16,7 +16,7 @@ public class ConcertRoom
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idConcertRoom;
     private String concertRoomName;
-    private String adress;
+    private String address;
     private BigDecimal rentCosts;
     @JsonIgnore
     @ToString.Exclude

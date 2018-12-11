@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface SeatRepository extends CrudRepository<Seat,Integer>
 {
-    Seat findFirstByFloorAndRowAndPosition(int floor, int row, int position);
+    Seat findFirstByRowAndPosition(int row, int position);
 
-    @Query(value="Select new wat.semestr7.ai.dtos.FreeSeatDTO(se.floor,se.row,se.position) from Seat se" +
+    @Query(value="Select new wat.semestr7.ai.dtos.FreeSeatDTO(se.row,se.position) from Seat se" +
             " where idSeat not in" +
             " (select s.idSeat from Ticket t" +
             " left join t.concert c" +

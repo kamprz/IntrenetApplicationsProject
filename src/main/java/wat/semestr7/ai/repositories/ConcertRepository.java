@@ -13,7 +13,7 @@ import java.util.List;
 public interface ConcertRepository extends CrudRepository<Concert,Integer>
 {
 
-    @Query(value="Select new wat.semestr7.ai.dtos.ConcertDetailedDTO(c.idConcert,c.concertTitle,c.date,cr.concertRoomName,cr.adress,cp.details,c.ticketCost)" +
+    @Query(value="Select new wat.semestr7.ai.dtos.ConcertDetailedDTO(c.idConcert,c.concertTitle,c.date,cr.concertRoomName,cr.address,cp.details,c.ticketCost)" +
             " from Concert c" +
             " left join c.concertPerformers cp" +
             " left join c.concertRoom cr" +
@@ -25,10 +25,11 @@ public interface ConcertRepository extends CrudRepository<Concert,Integer>
             " where c.idConcert = :id")
     List<PieceOfMusicDTO> findConcertRepertoire(@Param("id") int id);
 
-    @Query(value="Select new wat.semestr7.ai.dtos.ConcertDTO(c.idConcert,c.concertTitle,c.date,cr.concertRoomName)" +
+    @Query(value="Select new wat.semestr7.ai.dtos.ConcertDetailedDTO(c.idConcert,c.concertTitle,c.date,cr.concertRoomName,cr.address,cp.details,c.ticketCost)" +
             " from Concert c" +
+            " left join c.concertPerformers cp" +
             " left join c.concertRoom cr")
-    List<ConcertDTO> findAllConcerts();
+    List<ConcertDetailedDTO> findAllConcerts();
 
 
 }

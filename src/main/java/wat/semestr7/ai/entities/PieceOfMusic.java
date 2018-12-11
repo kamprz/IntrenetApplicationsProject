@@ -15,7 +15,6 @@ public class PieceOfMusic
     private int idPiece;
     private String titlePiece;
     private String composer;
-    private int durationInMinutes;
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})

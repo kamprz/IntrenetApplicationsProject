@@ -10,9 +10,8 @@ public class FreeSeatDTO
     private int row;
     private int col;
 
-    public FreeSeatDTO(int floor, int row, int col) {
+    public FreeSeatDTO(int row, int col) {
         this.row = row;
         this.col = col;
-        this.floor = floor;
     }
 }
