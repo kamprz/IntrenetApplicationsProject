@@ -1,0 +1,59 @@
+package wat.semestr7.ai.dtos;
+
+import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
+import wat.semestr7.ai.entities.Concert;
+import wat.semestr7.ai.entities.PieceOfMusic;
+import wat.semestr7.ai.repositories.ConcertRoomRepository;
+import wat.semestr7.ai.repositories.PerformersRepository;
+import wat.semestr7.ai.utils.DateUtils;
+
+import java.text.ParseException;
+
+@Component
+public class ConcertMapper {
+
+    private PerformersRepository performersRepository;
+    private ConcertRoomRepository concertRoomRepository;
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
+
+    public ConcertMapper(PerformersRepository performersRepository, ConcertRoomRepository concertRoomRepository) {
+        this.performersRepository = performersRepository;
+        this.concertRoomRepository = concertRoomRepository;
+    }
+
+    public Concert dtoToConcert(ConcertDto dto) throws ParseException {
+        Concert concert = new Concert();
+
+        concert.setIdConcert(dto.getIdConcert());
+        concert.setConcertTitle(dto.getConcertTitle());
+        concert.setDate(DateUtils.parseDate(dto.getDate()));
+        concert.setAdditionalOrganisationCosts(dto.getAdditionalOrganisationCosts());
+        concert.setTicketCost(dto.getTicketCost());
+        concert.setConcertRoom(concertRoomRepository.findFirstByConcertRoomName(dto.getConcertRoomName()));
+        concert.setConcertPerformers(performersRepository.findFirstByDetails(dto.getConcertPerformers()));
+        for(PieceOfMusicDto pomDto : dto.getRepertoire())
+        {
+            concert.addPieceOfMusic(mapper.pieceOfMusicDtoToPieceOfMusic(pomDto));
+        }
+        return concert;
+    }
+
+    public ConcertDto concertToDto(Concert concert)
+    {
+        ConcertDto dto = new ConcertDto();
+        dto.setIdConcert(concert.getIdConcert());
+        dto.setConcertTitle(concert.getConcertTitle());
+        dto.setDate(DateUtils.formatDate(concert.getDate()));
+        dto.setAdditionalOrganisationCosts(concert.getAdditionalOrganisationCosts());
+        dto.setTicketCost(concert.getTicketCost());
+        dto.setConcertRoomAddress(concert.getConcertRoom().getAddress());
+        dto.setConcertRoomName(concert.getConcertRoom().getConcertRoomName());
+        dto.setConcertPerformers(concert.getConcertPerformers().getDetails());
+        for(PieceOfMusic pom : concert.getRepertoire())
+        {
+            dto.addPieceOfMusic(mapper.pieceOfMusicToPieceOfMusicDto(pom));
+        }
+        return dto;
+    }
+}

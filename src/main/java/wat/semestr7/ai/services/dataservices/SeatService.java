@@ -1,7 +1,7 @@
 package wat.semestr7.ai.services;
 
 import org.springframework.stereotype.Service;
-import wat.semestr7.ai.dtos.FreeSeatDTO;
+import wat.semestr7.ai.dtos.SeatDto;
 import wat.semestr7.ai.entities.Seat;
 import wat.semestr7.ai.repositories.SeatRepository;
 
@@ -16,7 +16,7 @@ public class SeatService
         this.seatRepository = seatRepository;
     }
 
-    public List<FreeSeatDTO> getFreeSeatsOnConcert(int idConcert)
+    public List<SeatDto> getFreeSeatsOnConcert(int idConcert)
     {
         return seatRepository.getAllFreeSeatsOnConcert(idConcert);
     }

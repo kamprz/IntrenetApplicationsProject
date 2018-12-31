@@ -7,7 +7,7 @@ import wat.semestr7.ai.entities.PieceOfMusic;
 
 import java.util.List;
 
-public interface PieceOfMusicRepository extends CrudRepository<PieceOfMusic,Integer>
+public interface PieceOfMusicService extends CrudRepository<PieceOfMusic,Integer>
 {
 
 }

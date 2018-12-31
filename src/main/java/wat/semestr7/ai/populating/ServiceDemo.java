@@ -36,7 +36,6 @@ public class ServiceDemo {
         Performers performers = getPerformers();
         List<PieceOfMusic> repertoire = getRepertoire();
         Concert concert = getConcert(concertRoom,performers,repertoire);
-        concert.setTicketCost(new BigDecimal("149.99"));
         return concertRepository.save(concert);
     }
 
@@ -65,11 +64,12 @@ public class ServiceDemo {
         Concert concert = new Concert();
         concert.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
         concert.setConcertTitle("Symfoniczny Koncert Niepodległościowy");
-        try {concert.setDate(DateUtils.parseDate("11/11/2018"));
+        try {concert.setDate(DateUtils.parseDate("11/11/2018 19:00"));
         } catch (ParseException e) { e.printStackTrace();}
         concert.setRepertoire(repertoire);
         concert.setConcertPerformers(performers);
         concert.setConcertRoom(concertRoom);
+        concert.setTicketCost(new BigDecimal("149.99"));
         return concert;
 
     }
@@ -81,7 +81,7 @@ public class ServiceDemo {
         concertRoom.setRentCosts(new BigDecimal("2000.00"));
         concertRoom.setAddress("Warszawa ul. Jasna 5");
         List<Seat> seats = new LinkedList<>();
-        for(int i=0;i<10;i++) for(int j=0;j<10;j++)
+        for(int i=1;i<11;i++) for(int j=1;j<11;j++)
         {
             Seat s = new Seat();
             s.setConcertRoom(concertRoom);
@@ -98,9 +98,9 @@ public class ServiceDemo {
     {
         Concert concert = testAddingConcert();
         List<Seat> seats = concert.getConcertRoom().getSeats();
-        for(int i=0;i<10;i+=2)
+        for(int i=1;i<11;i+=2)
         {
-            for(int j=0;j<10;j++)
+            for(int j=1;j<11;j+=2)
             {
                 Ticket t = new Ticket();
                 t.setConcert(concert);
@@ -110,5 +110,4 @@ public class ServiceDemo {
         }
         return concert;
     }
-
 }
