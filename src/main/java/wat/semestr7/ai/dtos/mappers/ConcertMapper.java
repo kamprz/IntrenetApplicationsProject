@@ -1,7 +1,9 @@
-package wat.semestr7.ai.dtos;
+package wat.semestr7.ai.dtos.mappers;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
+import wat.semestr7.ai.dtos.ConcertDto;
+import wat.semestr7.ai.dtos.PieceOfMusicDto;
 import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.PieceOfMusic;
 import wat.semestr7.ai.repositories.ConcertRoomRepository;
@@ -27,11 +29,12 @@ public class ConcertMapper {
 
         concert.setIdConcert(dto.getIdConcert());
         concert.setConcertTitle(dto.getConcertTitle());
-        concert.setDate(DateUtils.parseDate(dto.getDate()));
+        concert.setDate(DateUtils.parseDate(dto.getDate()));    //this throws ParseException
         concert.setAdditionalOrganisationCosts(dto.getAdditionalOrganisationCosts());
         concert.setTicketCost(dto.getTicketCost());
         concert.setConcertRoom(concertRoomRepository.findFirstByConcertRoomName(dto.getConcertRoomName()));
         concert.setConcertPerformers(performersRepository.findFirstByDetails(dto.getConcertPerformers()));
+        concert.setApproved(dto.isApproved());
         for(PieceOfMusicDto pomDto : dto.getRepertoire())
         {
             concert.addPieceOfMusic(mapper.pieceOfMusicDtoToPieceOfMusic(pomDto));
@@ -50,6 +53,7 @@ public class ConcertMapper {
         dto.setConcertRoomAddress(concert.getConcertRoom().getAddress());
         dto.setConcertRoomName(concert.getConcertRoom().getConcertRoomName());
         dto.setConcertPerformers(concert.getConcertPerformers().getDetails());
+        dto.setApproved(concert.isApproved());
         for(PieceOfMusic pom : concert.getRepertoire())
         {
             dto.addPieceOfMusic(mapper.pieceOfMusicToPieceOfMusicDto(pom));

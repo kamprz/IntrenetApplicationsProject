@@ -10,12 +10,15 @@ import java.util.List;
 public class Purchase
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPurchase;
     @Column(name = "isPaid", columnDefinition = "boolean default false", nullable = false)
     private boolean isPaid;
+    private String email;
+    @Column(name = "paypal_id")
+    private String paypalID;
 
-    @OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
+    /*@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
-    private List<Ticket> tickets;
+    private List<Ticket> tickets;*/
 }

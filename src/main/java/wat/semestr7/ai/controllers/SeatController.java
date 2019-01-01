@@ -5,9 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import wat.semestr7.ai.dtos.FreeSeatDTO;
-import wat.semestr7.ai.entities.Seat;
-import wat.semestr7.ai.services.SeatService;
+import wat.semestr7.ai.dtos.SeatDto;
+import wat.semestr7.ai.services.dataservices.SeatService;
 
 import java.util.List;
 
@@ -21,8 +20,9 @@ public class SeatController
     }
 
     @GetMapping("concerts/{id}/freeSeats")
-    public ResponseEntity<List<FreeSeatDTO>> getFreeSeatsOnConcert(@PathVariable("id") int concertId)
+    public ResponseEntity<List<SeatDto>> getFreeSeatsOnConcert(@PathVariable("id") int concertId)
     {
         return new ResponseEntity<>(seatService.getFreeSeatsOnConcert(concertId), HttpStatus.OK);
     }
+
 }

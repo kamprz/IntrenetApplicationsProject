@@ -11,7 +11,7 @@ import java.util.List;
 public class PieceOfMusic
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPiece;
     private String titlePiece;
     private String composer;
@@ -23,4 +23,12 @@ public class PieceOfMusic
             inverseJoinColumns = @JoinColumn(name = "idConcert")
     )
     private List<Concert> concerts;
+
+    public PieceOfMusic(String titlePiece, String composer) {
+        this.titlePiece = titlePiece;
+        this.composer = composer;
+    }
+
+    public PieceOfMusic() {
+    }
 }

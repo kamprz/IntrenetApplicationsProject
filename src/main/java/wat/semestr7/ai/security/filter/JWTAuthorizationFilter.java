@@ -1,10 +1,14 @@
-package com.auth0.samples.authapi.springbootauthupdated.security.filter;
+package wat.semestr7.ai.security.filter;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import wat.semestr7.ai.services.dataservices.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,18 +16,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import com.auth0.jwt.algorithms.Algorithm;
 
-import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityConfiguration.AUTHORIZATION_HEADER_STRING;
-import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityConfiguration.SEED;
-import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityConfiguration.TOKEN_PREFIX;
+import static wat.semestr7.ai.security.SecurityConfiguration.AUTHORIZATION_HEADER_STRING;
+import static wat.semestr7.ai.security.SecurityConfiguration.SEED;
+import static wat.semestr7.ai.security.SecurityConfiguration.TOKEN_PREFIX;
 
 
-public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+public class JWTAuthorizationFilter extends BasicAuthenticationFilter
+{
+    private UserService userService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, UserService userService) {
         super(authenticationManager);
+        this.userService = userService;
     }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -50,7 +57,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
-            if (user != null) return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            if (user != null) return new UsernamePasswordAuthenticationToken(user, null, userService.getAuthorities(user));
             return null;
         }
         return null;

@@ -1,9 +1,8 @@
-package wat.semestr7.ai.dtos.concert;
+package wat.semestr7.ai.dtos;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import wat.semestr7.ai.dtos.pieceofmusic.PieceOfMusicDto;
 import wat.semestr7.ai.entities.ConcertRoom;
 import wat.semestr7.ai.entities.Performers;
 import wat.semestr7.ai.entities.PieceOfMusic;
@@ -19,11 +18,13 @@ public class ConcertDto
 {
     private int idConcert;
     private String concertTitle;
-    private Date date;
+    private String date;
     private BigDecimal additionalOrganisationCosts;
+    private boolean isApproved;
     private BigDecimal ticketCost;
-    private ConcertRoom concertRoom;
-    private Performers concertPerformers;
+    private String concertRoomName;
+    private String concertRoomAddress;
+    private String concertPerformers;
     private List<PieceOfMusicDto> repertoire = new LinkedList<>();
     public void addPieceOfMusic(PieceOfMusicDto p){ repertoire.add(p);}
 }

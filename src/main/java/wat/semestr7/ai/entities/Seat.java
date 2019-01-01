@@ -10,12 +10,12 @@ import javax.persistence.*;
 public class Seat
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idSeat;
     private int row;
     private int position;
     @ToString.Exclude
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH} ,fetch = FetchType.LAZY)
     @JoinColumn(name="idConcertRoom")
     private ConcertRoom concertRoom;
 }

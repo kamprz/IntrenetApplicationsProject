@@ -1,8 +1,8 @@
-package wat.semestr7.ai.dtos;
+package wat.semestr7.ai.dtos.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import wat.semestr7.ai.dtos.*;
 import wat.semestr7.ai.entities.*;
 
 @Mapper
@@ -38,11 +38,6 @@ public interface EntityToDtoMapper {
     @Mapping(target = "title", source = "titlePiece")
     PieceOfMusicDto pieceOfMusicToPieceOfMusicDto(PieceOfMusic pieceOfMusic);
 
-    //Purchase
-
-    Purchase dtoToPurchase(PurchaseDto dto);
-
-    PurchaseDto purchaseToDto(Purchase purchase);
 
     //Seat
 
@@ -50,11 +45,6 @@ public interface EntityToDtoMapper {
 
     SeatDto seatToDto(Seat seat);
 
-    //Ticket
-
-    Ticket dtoToTicket(TicketDto dto);
-
-    TicketDto ticketToDto(Ticket ticket);
 
     //TransactionDto
 

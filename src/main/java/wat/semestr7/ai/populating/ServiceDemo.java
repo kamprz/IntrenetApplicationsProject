@@ -1,18 +1,15 @@
-package wat.semestr7.ai.services;
+package wat.semestr7.ai.populating;
 
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import wat.semestr7.ai.repositories.*;
+import wat.semestr7.ai.services.dataservices.DiscountService;
 import wat.semestr7.ai.utils.DateUtils;
 import wat.semestr7.ai.entities.*;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ServiceDemo {
@@ -21,15 +18,19 @@ public class ServiceDemo {
     private ConcertRoomRepository concertRoomRepository;
     private TicketRepository ticketRepository;
     private SeatRepository seatRepository;
+    private UserRepository userRepository;
+    private DiscountService discountService;
 
-    public ServiceDemo(ConcertRepository concertRepository, ConcertRoomRepository concertRoomRepository, TicketRepository ticketRepository, SeatRepository seatRepository) {
+    public ServiceDemo(ConcertRepository concertRepository, ConcertRoomRepository concertRoomRepository, TicketRepository ticketRepository,
+                       SeatRepository seatRepository, UserRepository userRepository, DiscountService discountService) {
         this.concertRepository = concertRepository;
         this.concertRoomRepository = concertRoomRepository;
         this.ticketRepository = ticketRepository;
         this.seatRepository = seatRepository;
+        this.userRepository = userRepository;
+        this.discountService = discountService;
     }
 
-    //@PostConstruct
     public Concert testAddingConcert()
     {
         ConcertRoom concertRoom = getConcertRoom();
@@ -37,6 +38,21 @@ public class ServiceDemo {
         List<PieceOfMusic> repertoire = getRepertoire();
         Concert concert = getConcert(concertRoom,performers,repertoire);
         return concertRepository.save(concert);
+    }
+
+    public void addUser()
+    {
+        AppUser admin = new AppUser();
+        admin.setEmail("admin@filharmonia.pl");
+        admin.setPassword("$2a$10$THdNsoLJC5UVWxItqXUbh.Ewf1qf6AGSIdmUb04A1K3.0tJmuD9au");
+        admin.setRole("ADMIN");
+        userRepository.save(admin);
+
+        AppUser approver = new AppUser();
+        approver.setEmail("approver@filharmonia.pl");
+        approver.setPassword("$2a$10$THdNsoLJC5UVWxItqXUbh.Ewf1qf6AGSIdmUb04A1K3.0tJmuD9au");
+        approver.setRole("APPROVER");
+        userRepository.save(approver);
     }
 
     private List<PieceOfMusic> getRepertoire() {
@@ -64,7 +80,7 @@ public class ServiceDemo {
         Concert concert = new Concert();
         concert.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
         concert.setConcertTitle("Symfoniczny Koncert Niepodległościowy");
-        try {concert.setDate(DateUtils.parseDate("11/11/2018 19:00"));
+        try {concert.setDate(DateUtils.parseDate("11/11/2019 19:00"));
         } catch (ParseException e) { e.printStackTrace();}
         concert.setRepertoire(repertoire);
         concert.setConcertPerformers(performers);
@@ -97,7 +113,13 @@ public class ServiceDemo {
     public Concert populate()
     {
         Concert concert = testAddingConcert();
+        Discount discount = new Discount();
+        discount.setName("Studencki");
+        discount.setPercents(50);
+        discountService.addDiscount(discount);
+        /*
         List<Seat> seats = concert.getConcertRoom().getSeats();
+
         for(int i=1;i<11;i+=2)
         {
             for(int j=1;j<11;j+=2)
@@ -108,6 +130,7 @@ public class ServiceDemo {
                 ticketRepository.save(t);
             }
         }
+        */
         return concert;
     }
 }

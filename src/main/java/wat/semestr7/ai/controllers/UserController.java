@@ -1,14 +1,19 @@
 package wat.semestr7.ai.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RestController;
-import wat.semestr7.ai.services.UserService;
 
 @RestController
 public class UserController
 {
-    private UserService userService;
+    private UserDetailsService userService;
 
-    public UserController(UserService userService) {
+    @Autowired
+    public UserController(UserDetailsService userService) {
         this.userService = userService;
     }
+
+
+
 }

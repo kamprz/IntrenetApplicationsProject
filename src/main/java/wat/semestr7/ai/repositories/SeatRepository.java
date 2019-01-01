@@ -3,7 +3,7 @@ package wat.semestr7.ai.repositories;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import wat.semestr7.ai.dtos.FreeSeatDTO;
+import wat.semestr7.ai.dtos.SeatDto;
 import wat.semestr7.ai.entities.Seat;
 
 import java.util.List;
@@ -12,15 +12,17 @@ public interface SeatRepository extends CrudRepository<Seat,Integer>
 {
     Seat findFirstByRowAndPosition(int row, int position);
 
-    @Query(value="Select new wat.semestr7.ai.dtos.FreeSeatDTO(se.row,se.position) from Seat se" +
+    @Query(value="Select new wat.semestr7.ai.dtos.SeatDto(se.row,se.position) from Seat se" +
             " where idSeat not in" +
             " (select s.idSeat from Ticket t" +
             " left join t.concert c" +
             " left join t.seat s" +
             " where c.idConcert = :concertId" +
             ")")
-    List<FreeSeatDTO> getAllFreeSeatsOnConcert(@Param("concertId") int concertId);
+    List<SeatDto> getAllFreeSeatsOnConcert(@Param("concertId") int concertId);
 
+    Integer countByPosition(int pos);
+    Integer countByRow(int row);
     /*
     Select se.id_seat from "seat" se
     where id_seat not in

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class Performers
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPerformers;
     private String details;
     private BigDecimal costOfPersonnel;

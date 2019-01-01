@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.entities.Transaction;
-import wat.semestr7.ai.services.TransactionService;
+import wat.semestr7.ai.services.dataservices.TransactionService;
 
 @RestController
 public class TransactionController

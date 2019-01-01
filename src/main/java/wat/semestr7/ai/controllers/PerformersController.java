@@ -1,7 +1,7 @@
 package wat.semestr7.ai.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-import wat.semestr7.ai.services.PerformersService;
+import wat.semestr7.ai.services.dataservices.PerformersService;
 
 @RestController
 public class PerformersController

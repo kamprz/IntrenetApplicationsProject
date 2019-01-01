@@ -1,4 +1,4 @@
-package wat.semestr7.ai.services;
+package wat.semestr7.ai.services.dataservices;
 
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.SeatDto;

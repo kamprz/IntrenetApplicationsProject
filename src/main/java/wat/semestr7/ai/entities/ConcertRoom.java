@@ -13,7 +13,7 @@ import java.util.List;
 public class ConcertRoom
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idConcertRoom;
     private String concertRoomName;
     private String address;
@@ -21,6 +21,7 @@ public class ConcertRoom
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "concertRoom",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
     private List<Seat> seats;
 }

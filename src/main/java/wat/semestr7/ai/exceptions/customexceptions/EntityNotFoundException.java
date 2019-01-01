@@ -1,4 +1,4 @@
-package wat.semestr7.ai.exceptions;
+package wat.semestr7.ai.exceptions.customexceptions;
 
 public class EntityNotFoundException extends Exception {
     public EntityNotFoundException (String message){

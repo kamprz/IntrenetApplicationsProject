@@ -1,41 +1,35 @@
-package com.example.demo.controller;
+package wat.semestr7.ai.controllers;
 
-import com.example.demo.service.CreatedPaymentResponse;
-import com.example.demo.service.ExecutedPaymentResponse;
-import com.example.demo.service.PayPalClient;
+import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wat.semestr7.ai.dtos.PurchaseDto;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
+import wat.semestr7.ai.services.paypal.CreatedPaymentResponse;
+import wat.semestr7.ai.services.paypal.ExecutedPaymentResponse;
+import wat.semestr7.ai.services.paypal.PayPalService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
-@RequestMapping
 public class PayPalController {
 
-    private final PayPalClient payPalClient;
-    @Autowired
-    PayPalController(PayPalClient payPalClient){
-        this.payPalClient = payPalClient;
+    private final PayPalService payPalService;
+    PayPalController(PayPalService payPalService){
+        this.payPalService = payPalService;
     }
 
-    @PostMapping(value = "/paypal/make/payment")
-    public CreatedPaymentResponse makePayment(@RequestParam("sum") String sum){
-        return payPalClient.createPayment(sum);
+    /*
+    @RequestParam(
+     */
+    @PostMapping(value = "/paypal/payment/make")
+    public ResponseEntity<String> makePayment(@RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
+        return ResponseEntity.ok().body(payPalService.createPayment(purchaseDto));
     }
 
-    @PostMapping(value = "/paypal/complete/payment")
-    public ExecutedPaymentResponse completePayment(HttpServletRequest request){
-        ExecutedPaymentResponse e =  payPalClient.completePayment(request);
-        System.out.println(e.getPayment());
-        System.out.println(e.getStatus());
-        return e;
+    @PostMapping(value = "/paypal/payment/complete")
+    public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException {
+        return ResponseEntity.ok().body(payPalService.completePayment(request));
     }
-
-    @GetMapping(value = "/success")
-    public void theEnd(HttpServletRequest request)
-    {
-        ExecutedPaymentResponse e =  payPalClient.completePayment(request);
-    }
-
 }

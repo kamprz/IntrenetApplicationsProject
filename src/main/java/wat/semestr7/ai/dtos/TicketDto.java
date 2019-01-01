@@ -1,31 +1,21 @@
-package wat.semestr7.ai.entities;
+package wat.semestr7.ai.dtos;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import wat.semestr7.ai.entities.Concert;
+import wat.semestr7.ai.entities.Purchase;
+import wat.semestr7.ai.entities.Seat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
-@Data
-@Entity
-public class Ticket
+@Getter
+@Setter
+@ToString
+public class TicketDto
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int idTicket;
-
-    @ToString.Exclude
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name="idConcert")
-    private Concert concert;
-
-    @ToString.Exclude
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name="idSeat")
-    private Seat seat;
-
-    @ToString.Exclude
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name="idPurchase")
-    private Purchase purchase;
+    private Integer seatRow;
+    private Integer seatCol;
+    private String discountName;
 }

@@ -1,26 +1,23 @@
-package wat.semestr7.ai.entities;
+package wat.semestr7.ai.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import wat.semestr7.ai.entities.Seat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Data
-@Entity
-public class ConcertRoom
+@Getter
+@Setter
+public class ConcertRoomDto
 {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int idConcertRoom;
     private String concertRoomName;
     private String address;
     private BigDecimal rentCosts;
-    @JsonIgnore
-    @ToString.Exclude
-    @OneToMany(mappedBy = "concertRoom",
-            cascade = CascadeType.ALL)
     private List<Seat> seats;
 }
