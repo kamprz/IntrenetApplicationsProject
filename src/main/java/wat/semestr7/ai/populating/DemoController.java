@@ -20,6 +20,7 @@ public class DemoController
     @GetMapping("/demo")
     public Concert demo()
     {
+        serviceDemo.addUser();
         return serviceDemo.populate();
     }
 

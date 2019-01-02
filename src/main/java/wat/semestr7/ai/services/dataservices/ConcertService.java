@@ -81,6 +81,15 @@ public class ConcertService
                 .collect(Collectors.toList());
     }
 
+    public List<ConcertDto> getApprovedConcerts()
+    {
+        return concertRepo.findAll().stream()
+                .filter(Concert::isApproved)
+                .filter(this::isBeforeConcertDate)
+                .map(c -> concertMapper.concertToDto(c))
+                .collect(Collectors.toList());
+    }
+
     private boolean isBeforeConcertDate(Concert c)
     {
         return new Date().before(c.getDate());

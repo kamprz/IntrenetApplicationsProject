@@ -100,7 +100,6 @@ public class TicketGenerator {
     private void close() {
         // Closing the document
         document.close();
-        System.out.println("PDF Created");
     }
 
     private void putEnding() {

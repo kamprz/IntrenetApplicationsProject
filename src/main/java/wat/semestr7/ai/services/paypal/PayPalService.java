@@ -44,8 +44,6 @@ public class PayPalService
 
     public String createPayment(PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
         String sum = getAmountToPay(purchaseDto);
-        System.out.println("SUM = " + sum);
-
         Amount amount = new Amount();
         amount.setCurrency("PLN");
         amount.setTotal(sum);
@@ -100,9 +98,8 @@ public class PayPalService
         {
             Purchase purchase = purchaseService.getPurchaseByToken(request.getParameter("token"));
             purchaseService.setPurchasePaid(purchase);
-            String mailToSendTickets = purchase.getEmail();
             ticketSendingService.sendTickets(purchase.getIdPurchase());
-            return mailToSendTickets;
+            return purchase.getEmail();
         }
         return "Completing paypal payment unsuccesfull";
     }

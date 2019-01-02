@@ -18,32 +18,38 @@ public class ConcertController
         this.service = service;
     }
 
-    @GetMapping("/concerts")
+    @GetMapping("/admin/concerts")
     public ResponseEntity<List<ConcertDto>> getAllConcerts()
     {
         return ResponseEntity.ok().body(service.getAllConcerts());
     }
 
-    @GetMapping("/concerts/{id}")
+    @GetMapping("/admin/concerts/{id}")
     public ResponseEntity<ConcertDto> getConcert(@PathVariable Integer id) throws EntityNotFoundException {
         return ResponseEntity.ok().body(service.getConcertDto(id));
     }
 
-    @PutMapping("/concerts")
+    @PutMapping("/admin/concerts")
     public void updateConcert(@RequestBody ConcertDto dto) throws ParseException {
         service.updateConcert(dto);
     }
 
-    @PostMapping("/concerts")
+    @PostMapping("/admin/concerts")
     public void addConcert(@RequestBody ConcertDto concertDto) throws ParseException {
         System.out.println("POST controller");
         service.addConcert(concertDto);
     }
 
-    @GetMapping("/concerts/approve")
+    @GetMapping("/concerts/not-approved")
     public ResponseEntity<List<ConcertDto>> getNotApprovedConcerts()
     {
         return ResponseEntity.ok().body(service.getNotApprovedConcerts());
+    }
+
+    @GetMapping("/concerts/approved")
+    public ResponseEntity<List<ConcertDto>> getApprovedConcerts()
+    {
+        return ResponseEntity.ok().body(service.getApprovedConcerts());
     }
 
 }
