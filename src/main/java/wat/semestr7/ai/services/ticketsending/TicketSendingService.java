@@ -2,7 +2,6 @@ package wat.semestr7.ai.services.ticketsending;
 
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.entities.Concert;
-import wat.semestr7.ai.entities.Discount;
 import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.entities.Ticket;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
@@ -48,8 +47,11 @@ public class TicketSendingService
                     .putDate(DateUtils.formatDate(concert.getDate()))
                     .putPosition(ticket.getSeat().getPosition()+"")
                     .putRow(ticket.getSeat().getRow()+"")
-                    .putPrice(PriceUtils.getTicketPrice(concert.getTicketCost(), ticket.getDiscount().getPercents()).toString())
-                    .putDiscount(ticket.getDiscount().getPercents()+"")
+                    .putPrice(PriceUtils.getTicketPrice(
+                            concert.getTicketCost(),
+                            ticket.getDiscount().getPercents())
+                            .setScale(2, BigDecimal.ROUND_UP).toString())
+                    .putDiscount(ticket.getDiscount().getPercents()+"%")
                     .get();
             tickets.add(map);
         }
