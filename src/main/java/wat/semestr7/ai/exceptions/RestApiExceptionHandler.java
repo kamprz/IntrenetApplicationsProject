@@ -62,5 +62,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     /*
     pojawiające się wyjątki:
     - SocketTimeoutException : brak internetu/ultra wolny, za długo idzie czekać
+    - IOException - gdy coś nawali z biletem
+    - UnknownHostException - próba rozpoczęcia płatności gdy nie ma internetu
      */
 }

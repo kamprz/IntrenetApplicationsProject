@@ -109,15 +109,16 @@ public class ServiceDemo {
         return concertRoom;
     }
 
-
-    public Concert populate()
+    private void addDiscount()
     {
-        Concert concert = testAddingConcert();
         Discount discount = new Discount();
         discount.setName("Studencki");
         discount.setPercents(50);
         discountService.addDiscount(discount);
-        /*
+    }
+
+    private void addTicketsOldOne(Concert concert)
+    {
         List<Seat> seats = concert.getConcertRoom().getSeats();
 
         for(int i=1;i<11;i+=2)
@@ -130,7 +131,12 @@ public class ServiceDemo {
                 ticketRepository.save(t);
             }
         }
-        */
+    }
+
+    public Concert populate()
+    {
+        Concert concert = testAddingConcert();
+        addDiscount();
         return concert;
     }
 }

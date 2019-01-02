@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.mappers.ConcertMapper;
 import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.entities.Concert;
+import wat.semestr7.ai.entities.Purchase;
+import wat.semestr7.ai.entities.Ticket;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.ConcertRepository;
 import wat.semestr7.ai.repositories.PieceOfMusicRepository;
@@ -20,12 +22,12 @@ import java.util.stream.Collectors;
 public class ConcertService
 {
     private ConcertRepository concertRepo;
-    private PieceOfMusicRepository pomRepo;
+    private TicketService ticketService;
     private ConcertMapper concertMapper;
 
-    public ConcertService(ConcertRepository concertRepo,PieceOfMusicRepository pomRepo, ConcertMapper concertMapper) {
+    public ConcertService(ConcertRepository concertRepo, TicketService ticketService, ConcertMapper concertMapper) {
         this.concertRepo = concertRepo;
-        this.pomRepo = pomRepo;
+        this.ticketService = ticketService;
         this.concertMapper = concertMapper;
     }
 
@@ -87,5 +89,11 @@ public class ConcertService
     public BigDecimal getConcertTicketPrice(int concertId)
     {
         return concertRepo.getConcertPriceByIdConcert(concertId);
+    }
+
+    public Concert getConcertByPurchase(Purchase purchase) throws EntityNotFoundException
+    {
+        Ticket ticket = ticketService.getFirstTicketByPurchase(purchase);
+        return getConcert(ticket.getConcert().getIdConcert());
     }
 }

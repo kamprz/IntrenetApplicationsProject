@@ -10,13 +10,15 @@ import wat.semestr7.ai.dtos.TicketDto;
 import wat.semestr7.ai.entities.*;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.services.dataservices.*;
+import wat.semestr7.ai.services.ticketsending.TicketSendingService;
+import wat.semestr7.ai.utils.PriceUtils;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PayPalService
@@ -28,14 +30,16 @@ public class PayPalService
     private SeatService seatService;
     private TicketService ticketService;
     private PurchaseService purchaseService;
+    private TicketSendingService ticketSendingService;
 
     public PayPalService(ConcertService concertService, DiscountService discountService, SeatService seatService,
-                         TicketService ticketService, PurchaseService purchaseService) {
+                         TicketService ticketService, PurchaseService purchaseService, TicketSendingService ticketSendingService) {
         this.concertService = concertService;
         this.discountService = discountService;
         this.seatService = seatService;
         this.ticketService = ticketService;
         this.purchaseService = purchaseService;
+        this.ticketSendingService = ticketSendingService;
     }
 
     public String createPayment(PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
@@ -83,8 +87,7 @@ public class PayPalService
         return null;
     }
 
-    public String completePayment(HttpServletRequest request) throws PayPalRESTException
-    {
+    public String completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException {
         Payment payment = new Payment();
         payment.setId(request.getParameter("paymentId"));
 
@@ -98,7 +101,7 @@ public class PayPalService
             Purchase purchase = purchaseService.getPurchaseByToken(request.getParameter("token"));
             purchaseService.setPurchasePaid(purchase);
             String mailToSendTickets = purchase.getEmail();
-            //send tickets on email
+            ticketSendingService.sendTickets(purchase.getIdPurchase());
             return mailToSendTickets;
         }
         return "Completing paypal payment unsuccesfull";
@@ -120,9 +123,7 @@ public class PayPalService
         for(TicketDto ticket : purchaseDto.getTickets())
         {
             int percentsOfDiscount = discountService.getDiscountPercentsByName(ticket.getDiscountName());
-            BigDecimal discountAmount = new BigDecimal(standardTicketPrice.doubleValue() * percentsOfDiscount / 100);
-            BigDecimal actualPrice = standardTicketPrice.subtract(discountAmount);
-            actualPrice.setScale(2,BigDecimal.ROUND_DOWN);
+            BigDecimal actualPrice = PriceUtils.getTicketPrice(standardTicketPrice,percentsOfDiscount);
             sum = sum.add(actualPrice);
         }
         return sum.setScale(2,BigDecimal.ROUND_DOWN).toString();

@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.repositories.PurchaseRepository;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class PurchaseService
 {
@@ -31,5 +33,8 @@ public class PurchaseService
         purchaseRepository.save(purchase);
     }
 
-    
+    public Purchase getPurchaseByPurchaseId(int id)
+    {
+        return purchaseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
+    }
 }
