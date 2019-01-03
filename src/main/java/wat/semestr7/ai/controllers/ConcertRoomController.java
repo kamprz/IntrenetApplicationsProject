@@ -28,7 +28,7 @@ public class ConcertRoomController
         return ResponseEntity.ok().body(concertRoomService.getAmountOfPositions());
     }
 
-    @GetMapping("/admin/concert-room/{name}")
+    @GetMapping("/admin/concert-room/{id}")
     public ResponseEntity<ConcertRoomDto> getById(@PathVariable int id) throws EntityNotFoundException {
         return ResponseEntity.ok().body(concertRoomService.getById(id));
     }
