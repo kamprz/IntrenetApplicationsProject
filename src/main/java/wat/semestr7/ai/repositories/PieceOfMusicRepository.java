@@ -9,8 +9,5 @@ import java.util.List;
 
 public interface PieceOfMusicRepository extends CrudRepository<PieceOfMusic,Integer>
 {
-    @Query(value = "select new wat.semestr7.ai.entities.PieceOfMusic(r.titlePiece,r.composer)" +
-            " from Concert c join c.repertoire r" +
-            " where c.idConcert = :id")
-    List<PieceOfMusic> findConcertRepertoire(@Param("id") int id);
+    List<PieceOfMusic> findAll();
 }

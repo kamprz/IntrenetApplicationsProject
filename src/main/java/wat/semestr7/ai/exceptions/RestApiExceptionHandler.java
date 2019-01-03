@@ -1,16 +1,12 @@
 package wat.semestr7.ai.exceptions;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 
 import java.text.ParseException;
 
@@ -33,7 +29,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, ParseException.class})
+    @ExceptionHandler({IllegalArgumentException.class, ParseException.class,WrongEntityInRequestBodyException.class})
     protected ResponseEntity<Object> handleIllegalArgument(Exception ex)
     {
         RestApiError error = RestApiError.builder()
@@ -45,7 +41,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
-/*
+    /*
     @ExceptionHandler(UsernameNotFoundException.class)
     protected ResponseEntity<Object> handleUsernameNotFound(Exception ex)
     {

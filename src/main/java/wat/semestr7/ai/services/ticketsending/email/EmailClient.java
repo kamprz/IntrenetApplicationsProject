@@ -43,7 +43,7 @@ public class EmailClient {
                 Message.RecipientType.TO, InternetAddress.parse(receiver));
         message.setSubject("Bilety do Filharmonii");
 
-        String msg = "W zalaczniku znajduje się twoj bilet";
+        String msg = "W zalaczniku znajduje sie twoj bilet";
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(msg, "text/html");

@@ -31,15 +31,17 @@ public class PayPalService
     private TicketService ticketService;
     private PurchaseService purchaseService;
     private TicketSendingService ticketSendingService;
+    private TransactionService transactionService;
 
-    public PayPalService(ConcertService concertService, DiscountService discountService, SeatService seatService,
-                         TicketService ticketService, PurchaseService purchaseService, TicketSendingService ticketSendingService) {
+    public PayPalService(ConcertService concertService, DiscountService discountService, SeatService seatService, TicketService ticketService,
+                         PurchaseService purchaseService, TicketSendingService ticketSendingService, TransactionService transactionService) {
         this.concertService = concertService;
         this.discountService = discountService;
         this.seatService = seatService;
         this.ticketService = ticketService;
         this.purchaseService = purchaseService;
         this.ticketSendingService = ticketSendingService;
+        this.transactionService = transactionService;
     }
 
     public String createPayment(PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
@@ -98,6 +100,7 @@ public class PayPalService
         {
             Purchase purchase = purchaseService.getPurchaseByToken(request.getParameter("token"));
             purchaseService.setPurchasePaid(purchase);
+            transactionService.addTransaction(purchase);
             ticketSendingService.sendTickets(purchase.getIdPurchase());
             return purchase.getEmail();
         }

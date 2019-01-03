@@ -19,7 +19,7 @@ public class SeatController
         this.seatService = seatService;
     }
 
-    @GetMapping("/concerts/{id}/free-seat")
+    @GetMapping("/concert/{id}/free-seat")
     public ResponseEntity<List<SeatDto>> getFreeSeatsOnConcert(@PathVariable("id") int concertId)
     {
         return new ResponseEntity<>(seatService.getFreeSeatsOnConcert(concertId), HttpStatus.OK);

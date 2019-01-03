@@ -2,6 +2,7 @@ package wat.semestr7.ai.services.dataservices;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.dtos.ConcertRoomDto;
 import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
 import wat.semestr7.ai.entities.ConcertRoom;
@@ -22,13 +23,6 @@ public class ConcertRoomService
         this.seatRepository = seatRepository;
     }
 
-    public ConcertRoomDto getByName(String name) throws EntityNotFoundException
-    {
-        ConcertRoom room = concertRoomRepository.findFirstByConcertRoomName(name);
-        if(room == null) throw new EntityNotFoundException("There is no concert room with such a name : " + name);
-        return mapper.concertRoomtoDto(room);
-    }
-
     public Integer getAmountOfRows() {
         return seatRepository.countByPosition(1);
     }
@@ -36,5 +30,10 @@ public class ConcertRoomService
     public Integer getAmountOfPositions()
     {
         return seatRepository.countByRow(1);
+    }
+
+    public ConcertRoomDto getById(int id) throws EntityNotFoundException
+    {
+        return mapper.concertRoomtoDto(concertRoomRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Such concert room does not exist")));
     }
 }

@@ -7,11 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -19,7 +15,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import wat.semestr7.ai.security.filter.JWTAuthenticationFilter;
 import wat.semestr7.ai.security.filter.JWTAuthorizationFilter;
-import wat.semestr7.ai.services.dataservices.UserService;
 
 
 @EnableWebSecurity
@@ -44,17 +39,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/demo").permitAll()
                 .antMatchers("/login").permitAll()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers("/paypal/**").permitAll()
-                .antMatchers("/concerts/{id}/free-seat").permitAll()
-                .antMatchers("/concerts/approved").permitAll()
-                .antMatchers("/concerts/not-approved**").hasAuthority("APPROVER")
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, "/add-user").permitAll()
+                .antMatchers(HttpMethod.GET,"/concert").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN_AUTHORITIES")
+                .antMatchers(HttpMethod.GET,"/concert/not-approved").hasAuthority("READ_NOT_APPROVED")
+                .antMatchers(HttpMethod.POST,"/concert/approve**").hasAuthority("APPROVE")
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(),userDetailsService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(),userDetailsService))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), userDetailsService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userDetailsService))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

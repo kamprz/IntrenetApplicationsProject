@@ -8,8 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import wat.semestr7.ai.entities.AppUser;
-import wat.semestr7.ai.services.dataservices.UserService;
+import wat.semestr7.ai.security.user.AppUser;
+import wat.semestr7.ai.security.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

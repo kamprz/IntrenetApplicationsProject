@@ -1,4 +1,4 @@
-package wat.semestr7.ai.services.dataservices;
+package wat.semestr7.ai.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -7,14 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import wat.semestr7.ai.entities.AppUser;
 import wat.semestr7.ai.repositories.UserRepository;
+import wat.semestr7.ai.security.user.AppUser;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import static java.util.Collections.emptyList;
 
 
 @Service
@@ -33,7 +31,8 @@ public class UserService implements UserDetailsService
         AppUser appUser = applicationUserRepository.findByEmail(email);
         if (appUser == null) throw new UsernameNotFoundException(email);
         List<GrantedAuthority> authorities = new LinkedList<>();
-        authorities.add(new SimpleGrantedAuthority(appUser.getRole()));
+        authorities.add(new SimpleGrantedAuthority(appUser.getRole().getRoleName()));
+        appUser.getRole().getAuthorities().forEach(a -> authorities.add(new SimpleGrantedAuthority(a.getAuthName())));
         return new User(appUser.getEmail(), appUser.getPassword(), authorities);
     }
 
@@ -42,7 +41,8 @@ public class UserService implements UserDetailsService
         AppUser appUser = applicationUserRepository.findByEmail(email);
         if (appUser == null) throw new UsernameNotFoundException(email);
         List<GrantedAuthority> authorities = new LinkedList<>();
-        authorities.add(new SimpleGrantedAuthority(appUser.getRole()));
+        authorities.add(new SimpleGrantedAuthority(appUser.getRole().getRoleName()));
+        appUser.getRole().getAuthorities().forEach(a -> authorities.add(new SimpleGrantedAuthority(a.getAuthName())));
         return authorities;
     }
 }

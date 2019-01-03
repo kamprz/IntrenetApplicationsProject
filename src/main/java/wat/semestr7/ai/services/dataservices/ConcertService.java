@@ -49,18 +49,7 @@ public class ConcertService
     }
 
     public void addConcert(ConcertDto concertDto) throws ParseException {
-        Optional<Concert> concert = concertRepo.findById(concertDto.getIdConcert());
         Concert mappedConcert = concertMapper.dtoToConcert(concertDto);
-        System.out.println(concert);
-        System.out.println(mappedConcert);
-        if(concert.isPresent())
-        {
-            if(concert.get().equals(mappedConcert))
-            {
-                System.out.println("Ten sam koncert");
-                return;
-            }
-        }
         concertRepo.save(mappedConcert);
     }
 
@@ -68,8 +57,10 @@ public class ConcertService
         concertRepo.save(concertMapper.dtoToConcert(dto));
     }
 
-    public void deleteConcert(ConcertDto dto) throws ParseException {
-        concertRepo.delete(concertMapper.dtoToConcert(dto));
+    public void deleteConcert(int id) throws EntityNotFoundException {
+        Optional<Concert> concertOpt = concertRepo.findById(id);
+        Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
+        concertRepo.delete(concert);
     }
 
     public List<ConcertDto> getNotApprovedConcerts()
@@ -104,5 +95,11 @@ public class ConcertService
     {
         Ticket ticket = ticketService.getFirstTicketByPurchase(purchase);
         return getConcert(ticket.getConcert().getIdConcert());
+    }
+
+    public void approveConcert(int id) throws EntityNotFoundException {
+        Optional<Concert> concertOpt = concertRepo.findById(id);
+        Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
+        concert.setApproved(true);
     }
 }

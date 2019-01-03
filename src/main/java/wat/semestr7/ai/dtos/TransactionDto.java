@@ -12,7 +12,6 @@ import java.util.Date;
 @Setter
 public class TransactionDto
 {
-    private int idTransaction;
     private BigDecimal transactionSum;
     private BigDecimal amountAfterTransaction;
     private String titleTransaction;

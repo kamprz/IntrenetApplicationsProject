@@ -1,6 +1,7 @@
 package wat.semestr7.ai.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class PieceOfMusic
 {
     @Id
@@ -29,6 +31,4 @@ public class PieceOfMusic
         this.composer = composer;
     }
 
-    public PieceOfMusic() {
-    }
 }

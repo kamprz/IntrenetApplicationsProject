@@ -1,6 +1,7 @@
 package wat.semestr7.ai.services.dataservices;
 
 import org.springframework.stereotype.Service;
+import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.entities.Transaction;
 import wat.semestr7.ai.repositories.TransactionRepository;
 
@@ -16,8 +17,10 @@ public class TransactionService
         this.repo=repo;
     }
 
-    public void addBudget(Transaction transaction)
+    public void addTransaction(Purchase purchase)
     {
+        Transaction transaction = new Transaction();
+        //transaction.setAmountAfterTransaction();
         repo.save(transaction);
     }
 

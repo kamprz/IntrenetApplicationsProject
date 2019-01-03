@@ -17,19 +17,19 @@ public class ConcertRoomController
         this.concertRoomService = concertRoomService;
     }
 
-    @GetMapping("/concert-room/rows")
+    @GetMapping("/admin/concert-room/row")
     public ResponseEntity<Integer> getAmountOfRows()
     {
         return ResponseEntity.ok().body(concertRoomService.getAmountOfRows());
     }
-    @GetMapping("/concert-room/positions")
+    @GetMapping("/admin/concert-room/position")
     public ResponseEntity<Integer> getAmountOfPositions()
     {
         return ResponseEntity.ok().body(concertRoomService.getAmountOfPositions());
     }
 
-    @GetMapping("/concert-room/{name}")
-    public ResponseEntity<ConcertRoomDto> getByName(@PathVariable String name) throws EntityNotFoundException {
-        return ResponseEntity.ok().body(concertRoomService.getByName(name.replaceAll("-"," ")));
+    @GetMapping("/admin/concert-room/{name}")
+    public ResponseEntity<ConcertRoomDto> getById(@PathVariable int id) throws EntityNotFoundException {
+        return ResponseEntity.ok().body(concertRoomService.getById(id));
     }
 }

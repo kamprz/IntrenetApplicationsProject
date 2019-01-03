@@ -1,7 +1,16 @@
 package wat.semestr7.ai.populating;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import wat.semestr7.ai.dtos.ConcertDto;
+import wat.semestr7.ai.dtos.mappers.ConcertMapper;
+import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
 import wat.semestr7.ai.repositories.*;
+import wat.semestr7.ai.repositories.AuthorityRepository;
+import wat.semestr7.ai.repositories.RoleRepository;
+import wat.semestr7.ai.security.user.AppUser;
+import wat.semestr7.ai.security.user.Authority;
+import wat.semestr7.ai.security.user.Role;
 import wat.semestr7.ai.services.dataservices.DiscountService;
 import wat.semestr7.ai.utils.DateUtils;
 import wat.semestr7.ai.entities.*;
@@ -20,15 +29,23 @@ public class ServiceDemo {
     private SeatRepository seatRepository;
     private UserRepository userRepository;
     private DiscountService discountService;
+    private RoleRepository roleRepository;
+    private AuthorityRepository authorityRepository;
+    private ConcertMapper concertMapper;
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
     public ServiceDemo(ConcertRepository concertRepository, ConcertRoomRepository concertRoomRepository, TicketRepository ticketRepository,
-                       SeatRepository seatRepository, UserRepository userRepository, DiscountService discountService) {
+                       SeatRepository seatRepository, UserRepository userRepository, DiscountService discountService,
+                       RoleRepository roleRepository, AuthorityRepository authorityRepository, ConcertMapper concertMapper) {
         this.concertRepository = concertRepository;
         this.concertRoomRepository = concertRoomRepository;
         this.ticketRepository = ticketRepository;
         this.seatRepository = seatRepository;
         this.userRepository = userRepository;
         this.discountService = discountService;
+        this.roleRepository = roleRepository;
+        this.authorityRepository = authorityRepository;
+        this.concertMapper = concertMapper;
     }
 
     public Concert testAddingConcert()
@@ -42,16 +59,37 @@ public class ServiceDemo {
 
     public void addUser()
     {
+        Authority auth1 = new Authority("ADMIN_AUTHORITIES");
+        Authority auth2 = new Authority("APPROVE");
+        Authority auth3 = new Authority("READ_NOT_APPROVED");
+        authorityRepository.save(auth1);
+        authorityRepository.save(auth2);
+        authorityRepository.save(auth3);
+
+        List<Authority> adminAuth = new LinkedList<>();
+        adminAuth.add(auth1);
+        adminAuth.add(auth3);
+
+        List<Authority> approverAuth = new LinkedList<>();
+        approverAuth.add(auth2);
+        approverAuth.add(auth3);
+
+        Role adminRole = new Role("ADMIN",adminAuth);
+        Role approverRole = new Role("APPROVER", approverAuth);
+
+        roleRepository.save(adminRole);
+        roleRepository.save(approverRole);
+
         AppUser admin = new AppUser();
         admin.setEmail("admin@filharmonia.pl");
         admin.setPassword("$2a$10$THdNsoLJC5UVWxItqXUbh.Ewf1qf6AGSIdmUb04A1K3.0tJmuD9au");
-        admin.setRole("ADMIN");
+        admin.setRole(adminRole);
         userRepository.save(admin);
 
         AppUser approver = new AppUser();
         approver.setEmail("approver@filharmonia.pl");
         approver.setPassword("$2a$10$THdNsoLJC5UVWxItqXUbh.Ewf1qf6AGSIdmUb04A1K3.0tJmuD9au");
-        approver.setRole("APPROVER");
+        approver.setRole(approverRole);
         userRepository.save(approver);
     }
 
@@ -86,6 +124,7 @@ public class ServiceDemo {
         concert.setConcertPerformers(performers);
         concert.setConcertRoom(concertRoom);
         concert.setTicketCost(new BigDecimal("149.99"));
+        concert.setIdConcert(1);
         return concert;
 
     }
@@ -114,7 +153,7 @@ public class ServiceDemo {
         Discount discount = new Discount();
         discount.setName("Studencki");
         discount.setPercents(50);
-        discountService.addDiscount(discount);
+        discountService.addDiscount(mapper.discountToDto(discount));
     }
 
     private void addTicketsOldOne(Concert concert)
@@ -133,10 +172,10 @@ public class ServiceDemo {
         }
     }
 
-    public Concert populate()
+    public ConcertDto populate()
     {
         Concert concert = testAddingConcert();
         addDiscount();
-        return concert;
+        return concertMapper.concertToDto(concert);
     }
 }

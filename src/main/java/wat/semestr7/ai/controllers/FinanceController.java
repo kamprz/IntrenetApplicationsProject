@@ -7,18 +7,12 @@ import wat.semestr7.ai.entities.Transaction;
 import wat.semestr7.ai.services.dataservices.TransactionService;
 
 @RestController
-public class TransactionController
+public class FinanceController
 {
     private TransactionService transactionService;
 
-    public TransactionController(TransactionService transactionService) {
+    public FinanceController(TransactionService transactionService) {
         this.transactionService = transactionService;
-    }
-
-    @PostMapping("budget")
-    public void addBudget(@RequestBody Transaction transaction)
-    {
-        transactionService.addBudget(transaction);
     }
 
     @GetMapping("budget")
