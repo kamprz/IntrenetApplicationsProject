@@ -27,7 +27,8 @@ public class PayPalController {
     }
 
     @PostMapping(value = "/paypal/payment/complete")
-    public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException {
+    public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, WrongEntityInRequestBodyException {
+        checkIfCompletingPaymentRequestBodyIsCorrect(request);
         return ResponseEntity.ok().body(payPalService.completePayment(request));
     }
 
