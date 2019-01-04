@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.PurchaseDto;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
-import wat.semestr7.ai.services.paypal.PayPalService;
+import wat.semestr7.ai.services.finance.PayPalService;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;

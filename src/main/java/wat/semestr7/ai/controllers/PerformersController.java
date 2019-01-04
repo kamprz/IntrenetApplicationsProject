@@ -37,6 +37,6 @@ public class PerformersController
 
     private void checkIfRequestBodyIsCorrect(PerformersDto dto) throws WrongEntityInRequestBodyException {
         if(dto.getDetails() == null || dto.getDetails().isEmpty()) throw new WrongEntityInRequestBodyException("Details of performers are not set");
-
+        if(dto.getCostOfPersonnel()==null || dto.getCostOfPersonnel().doubleValue()==0.0) throw new WrongEntityInRequestBodyException("Cost of personel must be set");
     }
 }

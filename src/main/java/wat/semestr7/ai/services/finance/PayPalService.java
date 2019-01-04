@@ -1,4 +1,4 @@
-package wat.semestr7.ai.services.paypal;
+package wat.semestr7.ai.services.finance;
 
 import com.paypal.api.payments.*;
 import com.paypal.api.payments.Transaction;

@@ -16,14 +16,15 @@ public class DiscountController {
         this.service = service;
     }
 
-    @GetMapping("/admin/discount")
+    @GetMapping("/discount")
     public ResponseEntity<List<DiscountDto>> getAllDiscounts()
     {
         return ResponseEntity.ok().body(service.getAll());
     }
 
     @RequestMapping(method = {RequestMethod.POST,RequestMethod.PUT},value = "/admin/discount")
-    public void postDiscount(@RequestBody DiscountDto dto){
+    public void postDiscount(@RequestBody DiscountDto dto) throws WrongEntityInRequestBodyException {
+        checkIfRequestBodyIsCorrect(dto);
         service.addDiscount(dto);
     }
 
@@ -35,7 +36,6 @@ public class DiscountController {
 
     private void checkIfRequestBodyIsCorrect(DiscountDto dto) throws WrongEntityInRequestBodyException {
         if(dto.getName() == null || dto.getName().isEmpty()) throw new WrongEntityInRequestBodyException("Discount must be named");
-
     }
 
 }

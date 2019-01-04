@@ -1,4 +1,4 @@
-package wat.semestr7.ai.dtos;
+package wat.semestr7.ai.dtos.finance;
 
 import lombok.Data;
 import lombok.Getter;

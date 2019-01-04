@@ -37,9 +37,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/free-seat/**").permitAll()
                 .antMatchers("/demo").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/paypal/**").permitAll()
+                .antMatchers("/discount").permitAll()
                 .antMatchers(HttpMethod.GET,"/concert").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN_AUTHORITIES")
                 .antMatchers(HttpMethod.GET,"/concert/not-approved").hasAuthority("READ_NOT_APPROVED")

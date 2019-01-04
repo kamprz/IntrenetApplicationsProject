@@ -3,6 +3,7 @@ package wat.semestr7.ai.dtos.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import wat.semestr7.ai.dtos.*;
+import wat.semestr7.ai.dtos.finance.TransactionDto;
 import wat.semestr7.ai.entities.*;
 
 @Mapper
@@ -32,5 +33,5 @@ public interface EntityToDtoMapper {
 
     //TransactionDto
     Transaction dtoToTransaction(TransactionDto dto);
-    TransactionDto transactionToDto(TransactionDto transactionDto);
+    TransactionDto transactionToDto(Transaction transactionDto);
 }
