@@ -6,12 +6,15 @@ import lombok.ToString;
 import wat.semestr7.ai.entities.Transaction;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @ToString
-public class MonthSummary {
+public class MonthSummaryDto {
+    private String beginDate;
+    private String endDate;
     private BigDecimal totalExpenses;
     private BigDecimal totalEarning;
     private BigDecimal balance;

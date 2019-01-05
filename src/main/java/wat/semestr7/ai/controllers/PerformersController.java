@@ -29,8 +29,8 @@ public class PerformersController
         service.create(dto);
     }
 
-    @DeleteMapping(value = "/admin/performer")
-    public void deletePerformers(@RequestParam() int id)
+    @DeleteMapping(value = "/admin/performer/{id}")
+    public void deletePerformers(@PathVariable int id)
     {
         service.delete(id);
     }

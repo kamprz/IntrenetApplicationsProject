@@ -48,12 +48,18 @@ public class ServiceDemo {
         this.concertMapper = concertMapper;
     }
 
-    public Concert testAddingConcert()
-    {
+    public Concert testAddingConcert()  {
         ConcertRoom concertRoom = getConcertRoom();
         Performers performers = getPerformers();
         List<PieceOfMusic> repertoire = getRepertoire();
         Concert concert = getConcert(concertRoom,performers,repertoire);
+        concertRepository.save(concert);
+        concert.setIdConcert(2);
+        try {
+            concert.setDate(DateUtils.parseDate("11/11/2018 19:00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return concertRepository.save(concert);
     }
 
@@ -123,7 +129,7 @@ public class ServiceDemo {
         concert.setRepertoire(repertoire);
         concert.setConcertPerformers(performers);
         concert.setConcertRoom(concertRoom);
-        concert.setTicketCost(new BigDecimal("149.99"));
+        concert.setTicketCost(new BigDecimal("100.00"));
         concert.setIdConcert(1);
         return concert;
 
@@ -148,12 +154,17 @@ public class ServiceDemo {
         return concertRoom;
     }
 
-    private void addDiscount()
+    private void addDiscounts()
     {
-        Discount discount = new Discount();
-        discount.setName("Studencki");
-        discount.setPercents(50);
-        discountService.addDiscount(mapper.discountToDto(discount));
+        Discount student = new Discount();
+        student.setName("Studencki");
+        student.setPercents(50);
+        discountService.addDiscount(mapper.discountToDto(student));
+
+        Discount normal = new Discount();
+        normal.setName("Normalny");
+        normal.setPercents(0);
+        discountService.addDiscount(mapper.discountToDto(normal));
     }
 
     private void addTicketsOldOne(Concert concert)
@@ -175,7 +186,7 @@ public class ServiceDemo {
     public ConcertDto populate()
     {
         Concert concert = testAddingConcert();
-        addDiscount();
+        addDiscounts();
         return concertMapper.concertToDto(concert);
     }
 }

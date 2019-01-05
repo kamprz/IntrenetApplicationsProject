@@ -36,4 +36,7 @@ public class ConcertRoomService
     {
         return mapper.concertRoomtoDto(concertRoomRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Such concert room does not exist")));
     }
+    public ConcertRoom getConcertRoom() throws EntityNotFoundException {
+        return concertRoomRepository.findById(1).orElseThrow(() -> new EntityNotFoundException("There is no concert room in database."));
+    }
 }

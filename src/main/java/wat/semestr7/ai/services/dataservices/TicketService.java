@@ -6,7 +6,6 @@ import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.entities.Seat;
 import wat.semestr7.ai.entities.Ticket;
-import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.TicketRepository;
 
 import java.util.List;
@@ -43,5 +42,10 @@ public class TicketService
     public List<Ticket> getAllTicketsByPurchase(Purchase purchase)
     {
         return ticketRepository.findAllByPurchase(purchase);
+    }
+
+    public List<Ticket> getAllTicketsByConcert(Concert concert)
+    {
+        return ticketRepository.findAllPaidByConcert(concert.getIdConcert());
     }
 }

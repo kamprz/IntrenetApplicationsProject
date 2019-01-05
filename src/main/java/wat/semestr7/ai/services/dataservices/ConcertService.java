@@ -2,6 +2,7 @@ package wat.semestr7.ai.services.dataservices;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import wat.semestr7.ai.dtos.ConcertDetailsDto;
 import wat.semestr7.ai.dtos.mappers.ConcertMapper;
 import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.entities.Concert;
@@ -14,6 +15,7 @@ import wat.semestr7.ai.repositories.PieceOfMusicRepository;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,11 +25,13 @@ public class ConcertService
 {
     private ConcertRepository concertRepo;
     private TicketService ticketService;
+    private ConcertRoomService concertRoomService;
     private ConcertMapper concertMapper;
 
-    public ConcertService(ConcertRepository concertRepo, TicketService ticketService, ConcertMapper concertMapper) {
+    public ConcertService(ConcertRepository concertRepo, TicketService ticketService, ConcertRoomService concertRoomService, ConcertMapper concertMapper) {
         this.concertRepo = concertRepo;
         this.ticketService = ticketService;
+        this.concertRoomService = concertRoomService;
         this.concertMapper = concertMapper;
     }
 
@@ -48,8 +52,9 @@ public class ConcertService
         return concertRepo.findAll().stream().map(c -> concertMapper.concertToDto(c)).collect(Collectors.toList());
     }
 
-    public void addConcert(ConcertDto concertDto) throws ParseException {
+    public void addConcert(ConcertDto concertDto) throws ParseException, EntityNotFoundException {
         Concert mappedConcert = concertMapper.dtoToConcert(concertDto);
+        mappedConcert.setConcertRoom(concertRoomService.getConcertRoom());
         concertRepo.save(mappedConcert);
     }
 
@@ -101,5 +106,10 @@ public class ConcertService
         Optional<Concert> concertOpt = concertRepo.findById(id);
         Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
         concert.setApproved(true);
+    }
+
+    public List<ConcertDetailsDto> getConcertDetailDtoList()
+    {
+        return concertRepo.getConcertDetailsList(new Date());
     }
 }

@@ -4,6 +4,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.dtos.PieceOfMusicDto;
+import wat.semestr7.ai.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.PieceOfMusic;
 import wat.semestr7.ai.repositories.ConcertRoomRepository;
@@ -60,4 +61,40 @@ public class ConcertMapper {
         }
         return dto;
     }
+
+    public static ConcertFinanceSummaryDto concertToFinanceSummarySimpleFieldsMapping(Concert concert)
+    {
+        ConcertFinanceSummaryDto financeDto = new ConcertFinanceSummaryDto();
+        financeDto.setConcertTitle(concert.getConcertTitle());
+        financeDto.setDate(DateUtils.formatDate(concert.getDate()));
+        financeDto.setConcertRoomAddress(concert.getConcertRoom().getAddress());
+        financeDto.setConcertRoomName(concert.getConcertRoom().getConcertRoomName());
+        financeDto.setConcertPerformers(concert.getConcertPerformers().getDetails());
+
+        financeDto.setPerformersCost(concert.getConcertPerformers().getCostOfPersonnel());
+        financeDto.setAdditionalConcertOrganisationCosts(concert.getAdditionalOrganisationCosts());
+        financeDto.setConcertRoomRentalCost(concert.getConcertRoom().getRentCosts());
+        financeDto.setTicketCost(concert.getTicketCost());
+        return financeDto;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

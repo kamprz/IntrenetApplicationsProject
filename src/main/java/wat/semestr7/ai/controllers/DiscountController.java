@@ -28,8 +28,8 @@ public class DiscountController {
         service.addDiscount(dto);
     }
 
-    @DeleteMapping("/admin/discount")
-    public void deleteDiscount(@RequestParam() String id)
+    @DeleteMapping("/admin/discount/{id}")
+    public void deleteDiscount(@PathVariable String id)
     {
         service.delete(id);
     }

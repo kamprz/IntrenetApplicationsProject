@@ -16,7 +16,7 @@ public class Transaction
     private BigDecimal transactionSum;
     private BigDecimal amountAfterTransaction;
     private String titleTransaction;
-    private String detailsTransaction;
+    private String transactionDetails;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 }

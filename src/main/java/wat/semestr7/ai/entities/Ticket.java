@@ -1,6 +1,8 @@
 package wat.semestr7.ai.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.math.BigDecimal;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ticket
 {
     @Id

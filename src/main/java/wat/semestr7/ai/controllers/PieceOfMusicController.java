@@ -30,8 +30,8 @@ public class PieceOfMusicController
         service.create(dto);
     }
 
-    @DeleteMapping("/admin/piece")
-    public void deletePieceOfMusic(@RequestParam() Integer id)
+    @DeleteMapping("/admin/piece/{id}")
+    public void deletePieceOfMusic(@PathVariable Integer id)
     {
         service.delete(id);
     }
