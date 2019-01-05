@@ -29,7 +29,7 @@ public class ConcertMapper {
 
         concert.setIdConcert(dto.getIdConcert());
         concert.setConcertTitle(dto.getConcertTitle());
-        concert.setDate(DateUtils.parseDate(dto.getDate()));    //this throws ParseException
+        concert.setDate(DateUtils.utcToDate(dto.getDate()));    //this throws ParseException
         concert.setAdditionalOrganisationCosts(dto.getAdditionalOrganisationCosts());
         concert.setTicketCost(dto.getTicketCost());
         concert.setConcertRoom(concertRoomRepository.findFirstByConcertRoomName(dto.getConcertRoomName()));
@@ -47,7 +47,7 @@ public class ConcertMapper {
         ConcertDto dto = new ConcertDto();
         dto.setIdConcert(concert.getIdConcert());
         dto.setConcertTitle(concert.getConcertTitle());
-        dto.setDate(DateUtils.formatDate(concert.getDate()));
+        dto.setDate(DateUtils.toUtcString(concert.getDate()));
         dto.setAdditionalOrganisationCosts(concert.getAdditionalOrganisationCosts());
         dto.setTicketCost(concert.getTicketCost());
         dto.setConcertRoomAddress(concert.getConcertRoom().getAddress());
