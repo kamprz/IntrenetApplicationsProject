@@ -55,5 +55,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(((User) authentication.getPrincipal()).getUsername())
                 .sign(HMAC512(SEED.getBytes()));
         response.addHeader(AUTHORIZATION_HEADER_STRING, TOKEN_PREFIX + token);
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Headers","Authorization");
+        response.addHeader("Access-Control-Expose-Headers","Authorization");
     }
 }
