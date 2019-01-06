@@ -18,7 +18,7 @@ import java.util.Optional;
 public class TransactionService
 {
     private TransactionRepository repo;
-    private EntityToDtoMapper mappper = Mappers.getMapper(EntityToDtoMapper.class);
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
     public TransactionService(TransactionRepository repo)
     {

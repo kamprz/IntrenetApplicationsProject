@@ -38,7 +38,6 @@ public class FinanceService {
     }
 
     public MonthSummaryDto getMonthSummary(int month, int year) {
-        System.out.println("Year: " + year + ", month: " + month);
         MonthSummaryDto result = new MonthSummaryDto();
         Calendar startDay = Calendar.getInstance();
         startDay.set(year,month,1,0,0,1);
@@ -51,8 +50,6 @@ public class FinanceService {
 
         result.setBeginDate(DateUtils.formatDate(startDay.getTime()));
         result.setEndDate(DateUtils.formatDate(endDay.getTime()));
-
-        System.out.println("start : " + DateUtils.formatDate(startDay.getTime()) + "\nend : " + DateUtils.formatDate(endDay.getTime()) + "\nCompared start.(end) = " + startDay.compareTo(endDay) );
 
         List<TransactionDto> transactions = transactionService.getAllBudgets().stream().peek(System.out::println)
                 .filter(t -> {  //is transaction in the month

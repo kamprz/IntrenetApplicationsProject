@@ -15,5 +15,6 @@ public class TransactionDto
     private BigDecimal transactionSum;
     private BigDecimal amountAfterTransaction;
     private String titleTransaction;
+    private String transactionDetails;
     private String date;
 }

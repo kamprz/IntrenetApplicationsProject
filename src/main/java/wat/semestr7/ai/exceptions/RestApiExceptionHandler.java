@@ -42,6 +42,18 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+    @ExceptionHandler(java.net.UnknownHostException.class)
+    protected ResponseEntity<Object> handleUnknownHostException(Exception ex)
+    {
+        RestApiError error = RestApiError.builder()
+                .message("Can't connect to paypal sandbox. Check your internet connection.")
+                .debugMessage(ex.toString())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .build()
+                .setNow();
+        return buildResponseEntity(error);
+    }
+
     /*
     @ExceptionHandler(UsernameNotFoundException.class)
     protected ResponseEntity<Object> handleUsernameNotFound(Exception ex)

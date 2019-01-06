@@ -20,12 +20,6 @@ public interface EntityToDtoMapper {
     ConcertRoom dtoToConcertRoom(ConcertRoomDto dto);
     ConcertRoomDto concertRoomtoDto(ConcertRoom concertRoom);
 
-    //Concert details
-    /*@Mapping(source = "date", target = "date", qualifiedByName = "stringToDate" )
-    ConcertDetailsDto concertToDetails(Concert concert);
-    @Mapping(source = "date", target = "date", qualifiedByName = "dateToString")
-    Concert detailsToConcert(ConcertDetailsDto detailsDto);*/
-
     //Discount
     Discount dtoToDiscount(DiscountDto dto);
     DiscountDto discountToDto(Discount discount);
@@ -40,29 +34,13 @@ public interface EntityToDtoMapper {
     @Mapping(target = "title", source = "titlePiece")
     PieceOfMusicDto pieceOfMusicToDto(PieceOfMusic pieceOfMusic);
 
-    //Seat
-    /*Seat dtoToSeat(SeatDto dto);
-    SeatDto seatToDto(Seat seat);*/
-
     //TransactionDto
-    @Mapping(source = "date", target = "date", qualifiedByName = "stringToDate" )
-    Transaction dtoToTransaction(TransactionDto dto);
-    @Mapping(source = "date", target = "date", qualifiedByName = "dateToString")
+    @Mappings({@Mapping( source = "date", target = "date", qualifiedByName = "dateToString"),
+                @Mapping(source = "transactionDetails", target = "transactionDetails")})
     TransactionDto transactionToDto(Transaction transactionDto);
 
     @Named("dateToString")
     default String dateToString(Date date) {
         return DateUtils.formatDate(date);
-    }
-
-    @Named("stringToDate")
-    default Date stringToDate(String str)
-    {
-        try {
-            return DateUtils.parseDate(str);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
