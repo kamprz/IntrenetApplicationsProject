@@ -16,6 +16,7 @@ import wat.semestr7.ai.services.dataservices.DiscountService;
 import wat.semestr7.ai.utils.DateUtils;
 import wat.semestr7.ai.entities.*;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.LinkedList;
@@ -68,7 +69,7 @@ public class ServiceDemo {
     {
         Authority auth1 = new Authority(SecurityAuthorities.ADMIN);
         Authority auth2 = new Authority(SecurityAuthorities.APPROVE);
-        Authority auth3 = new Authority(SecurityAuthorities.DELETE_NOT_APPROVED);
+        Authority auth3 = new Authority(SecurityAuthorities.READ_NOT_APPROVED);
         Authority auth4 = new Authority(SecurityAuthorities.DELETE_NOT_APPROVED);
         authorityRepository.save(auth1);
         authorityRepository.save(auth2);
@@ -186,11 +187,12 @@ public class ServiceDemo {
             }
         }
     }
-
+    @PostConstruct
     public ConcertDto populate()
     {
         Concert concert = testAddingConcert();
         addDiscounts();
+        addUser();
         return concertMapper.concertToDto(concert);
     }
 }

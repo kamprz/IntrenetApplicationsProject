@@ -3,6 +3,7 @@ package wat.semestr7.ai.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,8 +18,9 @@ public class Purchase
     private String email;
     @Column(name = "paypal_id")
     private String paypalID;
+    private Date timestamp;
 
-    /*@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
+    @OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
-    private List<Ticket> tickets;*/
+    private List<Ticket> tickets;
 }

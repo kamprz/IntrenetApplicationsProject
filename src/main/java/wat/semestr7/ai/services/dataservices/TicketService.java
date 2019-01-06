@@ -1,5 +1,6 @@
 package wat.semestr7.ai.services.dataservices;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.TicketDto;
 import wat.semestr7.ai.entities.Concert;
@@ -8,6 +9,7 @@ import wat.semestr7.ai.entities.Seat;
 import wat.semestr7.ai.entities.Ticket;
 import wat.semestr7.ai.repositories.TicketRepository;
 
+import java.util.Date;
 import java.util.List;
 
 @Service

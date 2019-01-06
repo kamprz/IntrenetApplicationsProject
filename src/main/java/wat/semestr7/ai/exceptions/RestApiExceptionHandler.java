@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import wat.semestr7.ai.exceptions.customexceptions.ConcertAlreadyApprovedException;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
+import wat.semestr7.ai.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 
 import java.text.ParseException;
@@ -18,7 +19,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({EntityNotFoundException.class, PaymentTimeoutException.class})
     protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex)
     {
         RestApiError apiError =  RestApiError.builder()

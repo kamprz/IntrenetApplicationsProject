@@ -9,6 +9,7 @@ import wat.semestr7.ai.dtos.PurchaseDto;
 import wat.semestr7.ai.dtos.TicketDto;
 import wat.semestr7.ai.entities.*;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
+import wat.semestr7.ai.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr7.ai.services.dataservices.*;
 import wat.semestr7.ai.services.ticketsending.TicketSendingService;
 import wat.semestr7.ai.utils.PriceUtils;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -87,7 +89,7 @@ public class PayPalService
         return null;
     }
 
-    public String completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException {
+    public String completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, PaymentTimeoutException {
         Payment payment = new Payment();
         payment.setId(request.getParameter("paymentId"));
 
@@ -134,6 +136,7 @@ public class PayPalService
         Purchase purchase = new Purchase();
         purchase.setPaypalID(token);
         purchase.setEmail(purchaseDto.getEmail());
+        purchase.setTimestamp(new Date());
         return purchase;
     }
 

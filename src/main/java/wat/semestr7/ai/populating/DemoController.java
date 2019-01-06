@@ -18,10 +18,9 @@ public class DemoController
         this.serviceDemo = serviceDemo;
     }
 
-    @GetMapping("/demo")
+    @GetMapping("/admin/populate")
     public ConcertDto demo()
     {
-        serviceDemo.addUser();
         return serviceDemo.populate();
     }
 

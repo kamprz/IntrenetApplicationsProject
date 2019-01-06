@@ -1,30 +1,60 @@
 package wat.semestr7.ai.services.dataservices;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.entities.Purchase;
+import wat.semestr7.ai.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr7.ai.repositories.PurchaseRepository;
+import wat.semestr7.ai.utils.DateUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PurchaseService
 {
     private PurchaseRepository purchaseRepository;
+    private static final int MINUTES_BEFORE_TO_DELETE = 5;
 
     public PurchaseService(PurchaseRepository purchaseRepository) {
         this.purchaseRepository = purchaseRepository;
     }
 
-    public void setPurchasePaidByPaypalToken(String token)
-    {
-        Purchase purchase = purchaseRepository.findFirstByPaypalID(token);
-        purchase.setPaid(true);
-        purchaseRepository.save(purchase);
+    @Scheduled(cron = "* */1 * * * *")
+    public void scheduleTaskUsingCronExpression() {
+        Calendar now = Calendar.getInstance();
+        now.setTime(new Date());
+
+        Calendar startDay = Calendar.getInstance();
+        startDay.set(now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DATE),
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE) - MINUTES_BEFORE_TO_DELETE);
+
+        List<Purchase> purchasesToDelete = purchaseRepository.findAllWhereIsNotPaid()
+                .stream()
+                .filter(p -> {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(p.getTimestamp());
+                    if (c.compareTo(startDay) < 0) return true;
+                    else return false;
+                }).collect(Collectors.toList());
+        for(Purchase p : purchasesToDelete)
+        {
+            System.out.println(DateUtils.formatDate(now.getTime()) + " : Deleting purchase, timestamp : " + p.getTimestamp());
+            purchaseRepository.delete(p);
+        }
+
     }
 
-    public Purchase getPurchaseByToken(String token)
-    {
-        return purchaseRepository.findFirstByPaypalID(token);
+    public Purchase getPurchaseByToken(String token) throws PaymentTimeoutException {
+        Purchase purchase = purchaseRepository.findFirstByPaypalID(token);
+        if(purchase == null) throw new PaymentTimeoutException("Time to make payment is out. Thanks for your money.");
+        else return purchase;
     }
 
     public void setPurchasePaid(Purchase purchase)
