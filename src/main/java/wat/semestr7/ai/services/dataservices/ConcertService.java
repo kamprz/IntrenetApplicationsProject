@@ -1,10 +1,12 @@
 package wat.semestr7.ai.services.dataservices;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.ConcertDetailsDto;
 import wat.semestr7.ai.dtos.mappers.ConcertMapper;
 import wat.semestr7.ai.dtos.ConcertDto;
+import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
 import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.PieceOfMusic;
 import wat.semestr7.ai.entities.Purchase;
@@ -29,6 +31,7 @@ public class ConcertService
     private TicketService ticketService;
     private ConcertRoomService concertRoomService;
     private ConcertMapper concertMapper;
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
     public ConcertService(ConcertRepository concertRepo, TicketService ticketService, ConcertRoomService concertRoomService, ConcertMapper concertMapper, PieceOfMusicService pieceOfMusicService) {
         this.concertRepo = concertRepo;
@@ -109,7 +112,7 @@ public class ConcertService
 
     public List<ConcertDetailsDto> getConcertDetailDtoList()
     {
-        return concertRepo.getConcertDetailsList(new Date());
+        return concertRepo.getConcertDetailsList(new Date()).stream().map(c -> mapper.detailsToDto(c)).collect(Collectors.toList());
     }
 
     public void deleteNotApprovedConcert(int id) throws EntityNotFoundException, ConcertAlreadyApprovedException {

@@ -8,6 +8,7 @@ import wat.semestr7.ai.dtos.*;
 import wat.semestr7.ai.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr7.ai.dtos.finance.TransactionDto;
 import wat.semestr7.ai.entities.*;
+import wat.semestr7.ai.others.ConcertDetails;
 import wat.semestr7.ai.utils.DateUtils;
 
 import java.text.ParseException;
@@ -17,8 +18,10 @@ import java.util.Date;
 public interface EntityToDtoMapper {
 
     //ConcertRoom
-    ConcertRoom dtoToConcertRoom(ConcertRoomDto dto);
     ConcertRoomDto concertRoomtoDto(ConcertRoom concertRoom);
+
+    @Mapping( source = "date", target = "date", qualifiedByName = "dateToString")
+    ConcertDetailsDto detailsToDto(ConcertDetails details);
 
     //Discount
     Discount dtoToDiscount(DiscountDto dto);

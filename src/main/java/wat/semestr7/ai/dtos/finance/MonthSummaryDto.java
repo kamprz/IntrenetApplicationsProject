@@ -18,5 +18,6 @@ public class MonthSummaryDto {
     private BigDecimal totalExpenses;
     private BigDecimal totalEarning;
     private BigDecimal balance;
+    private String accountBalanceAtTheEndOfMonth;
     private List<TransactionDto> transactions;
 }

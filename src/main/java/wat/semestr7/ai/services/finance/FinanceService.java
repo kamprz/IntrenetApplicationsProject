@@ -20,7 +20,6 @@ import wat.semestr7.ai.utils.PriceUtils;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,7 @@ public class FinanceService {
         Calendar startDay = Calendar.getInstance();
         startDay.set(year,month,1,0,0,1);
         startDay.set(Calendar.MONTH,startDay.get(Calendar.MONTH) -1);
-        //dziwne to ale działa...tak jakby źle przyjmowało miesiąc (o jeden za późny)
+        //dziwne to ale działa...tak jakby źle przyjmowało miesiąc (o jeden za późny, stąd odejmowanie)
 
         Calendar endDay = Calendar.getInstance();
         endDay.set(year,month,1,0,0,0);
@@ -51,7 +50,7 @@ public class FinanceService {
         result.setBeginDate(DateUtils.formatDate(startDay.getTime()));
         result.setEndDate(DateUtils.formatDate(endDay.getTime()));
 
-        List<TransactionDto> transactions = transactionService.getAllBudgets().stream().peek(System.out::println)
+        List<TransactionDto> transactions = transactionService.getAllBudgets().stream()
                 .filter(t -> {  //is transaction in the month
                     Calendar transactionCal = Calendar.getInstance();
                     transactionCal.setTime(t.getDate());
@@ -67,6 +66,11 @@ public class FinanceService {
         BigDecimal totalExpenses = new BigDecimal("0.0");
         BigDecimal totalEarning = new BigDecimal("0.0");
         BigDecimal balance = new BigDecimal("0.0");
+        String accountCurrentBalance;
+        if(transactions!= null && transactions.size()>0)
+            accountCurrentBalance = transactions.get(0).getAmountAfterTransaction().setScale(2,BigDecimal.ROUND_UNNECESSARY).toString();
+        else accountCurrentBalance = "Brak danych ze wskazanego miesiąca";
+        result.setAccountBalanceAtTheEndOfMonth(accountCurrentBalance);
         for(TransactionDto transaction : transactions)
         {
             balance = balance.add(transaction.getTransactionSum());
