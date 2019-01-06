@@ -7,8 +7,10 @@ import wat.semestr7.ai.dtos.PieceOfMusicDto;
 import wat.semestr7.ai.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.PieceOfMusic;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.ConcertRoomRepository;
 import wat.semestr7.ai.repositories.PerformersRepository;
+import wat.semestr7.ai.services.dataservices.PieceOfMusicService;
 import wat.semestr7.ai.utils.DateUtils;
 
 import java.text.ParseException;
@@ -18,14 +20,16 @@ public class ConcertMapper {
 
     private PerformersRepository performersRepository;
     private ConcertRoomRepository concertRoomRepository;
+    private PieceOfMusicService pieceOfMusicService;
     private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
-    public ConcertMapper(PerformersRepository performersRepository, ConcertRoomRepository concertRoomRepository) {
+    public ConcertMapper(PerformersRepository performersRepository, ConcertRoomRepository concertRoomRepository, PieceOfMusicService pieceOfMusicService) {
         this.performersRepository = performersRepository;
         this.concertRoomRepository = concertRoomRepository;
+        this.pieceOfMusicService = pieceOfMusicService;
     }
 
-    public Concert dtoToConcert(ConcertDto dto) throws ParseException {
+    public Concert dtoToConcert(ConcertDto dto) throws ParseException, EntityNotFoundException {
         Concert concert = new Concert();
 
         concert.setIdConcert(dto.getIdConcert());
@@ -35,10 +39,16 @@ public class ConcertMapper {
         concert.setTicketCost(dto.getTicketCost());
         concert.setConcertRoom(concertRoomRepository.findFirstByConcertRoomName(dto.getConcertRoomName()));
         concert.setConcertPerformers(performersRepository.findFirstByDetails(dto.getConcertPerformers()));
+        if(concert.getConcertPerformers()==null) throw new EntityNotFoundException("There is no such performers entity in database.");
         concert.setApproved(dto.isApproved());
         for(PieceOfMusicDto pomDto : dto.getRepertoire())
         {
-            concert.addPieceOfMusic(mapper.pieceOfMusicDtoToPieceOfMusic(pomDto));
+            try {
+                concert.addPieceOfMusic(pieceOfMusicService.getById(pomDto.getIdPiece()));
+            }
+            catch (EntityNotFoundException e){
+                concert.addPieceOfMusic(pieceOfMusicService.createAndReturn(pomDto));
+            }
         }
         return concert;
     }
@@ -57,7 +67,7 @@ public class ConcertMapper {
         dto.setApproved(concert.isApproved());
         for(PieceOfMusic pom : concert.getRepertoire())
         {
-            dto.addPieceOfMusic(mapper.pieceOfMusicToPieceOfMusicDto(pom));
+            dto.addPieceOfMusic(mapper.pieceOfMusicToDto(pom));
         }
         return dto;
     }

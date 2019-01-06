@@ -3,6 +3,7 @@ package wat.semestr7.ai.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.PieceOfMusicDto;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.dataservices.PieceOfMusicService;
 
@@ -31,8 +32,7 @@ public class PieceOfMusicController
     }
 
     @DeleteMapping("/admin/piece/{id}")
-    public void deletePieceOfMusic(@PathVariable Integer id)
-    {
+    public void deletePieceOfMusic(@PathVariable Integer id) throws EntityNotFoundException {
         service.delete(id);
     }
 

@@ -21,10 +21,10 @@ public interface EntityToDtoMapper {
     ConcertRoomDto concertRoomtoDto(ConcertRoom concertRoom);
 
     //Concert details
-    @Mapping(source = "date", target = "date", qualifiedByName = "stringToDate" )
+    /*@Mapping(source = "date", target = "date", qualifiedByName = "stringToDate" )
     ConcertDetailsDto concertToDetails(Concert concert);
     @Mapping(source = "date", target = "date", qualifiedByName = "dateToString")
-    Concert detailsToConcert(ConcertDetailsDto detailsDto);
+    Concert detailsToConcert(ConcertDetailsDto detailsDto);*/
 
     //Discount
     Discount dtoToDiscount(DiscountDto dto);
@@ -36,13 +36,13 @@ public interface EntityToDtoMapper {
 
     //Piece of Music:
     @Mapping(target = "titlePiece", source = "title")
-    PieceOfMusic pieceOfMusicDtoToPieceOfMusic(PieceOfMusicDto dto);
+    PieceOfMusic dtoToPieceOfMusic(PieceOfMusicDto dto);
     @Mapping(target = "title", source = "titlePiece")
-    PieceOfMusicDto pieceOfMusicToPieceOfMusicDto(PieceOfMusic pieceOfMusic);
+    PieceOfMusicDto pieceOfMusicToDto(PieceOfMusic pieceOfMusic);
 
     //Seat
-    Seat dtoToSeat(SeatDto dto);
-    SeatDto seatToDto(Seat seat);
+    /*Seat dtoToSeat(SeatDto dto);
+    SeatDto seatToDto(Seat seat);*/
 
     //TransactionDto
     @Mapping(source = "date", target = "date", qualifiedByName = "stringToDate" )

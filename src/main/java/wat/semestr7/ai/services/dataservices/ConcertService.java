@@ -6,6 +6,7 @@ import wat.semestr7.ai.dtos.ConcertDetailsDto;
 import wat.semestr7.ai.dtos.mappers.ConcertMapper;
 import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.entities.Concert;
+import wat.semestr7.ai.entities.PieceOfMusic;
 import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.entities.Ticket;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
@@ -28,7 +29,7 @@ public class ConcertService
     private ConcertRoomService concertRoomService;
     private ConcertMapper concertMapper;
 
-    public ConcertService(ConcertRepository concertRepo, TicketService ticketService, ConcertRoomService concertRoomService, ConcertMapper concertMapper) {
+    public ConcertService(ConcertRepository concertRepo, TicketService ticketService, ConcertRoomService concertRoomService, ConcertMapper concertMapper, PieceOfMusicService pieceOfMusicService) {
         this.concertRepo = concertRepo;
         this.ticketService = ticketService;
         this.concertRoomService = concertRoomService;
@@ -56,10 +57,6 @@ public class ConcertService
         Concert mappedConcert = concertMapper.dtoToConcert(concertDto);
         mappedConcert.setConcertRoom(concertRoomService.getConcertRoom());
         concertRepo.save(mappedConcert);
-    }
-
-    public void updateConcert(ConcertDto dto) throws ParseException {
-        concertRepo.save(concertMapper.dtoToConcert(dto));
     }
 
     public void deleteConcert(int id) throws EntityNotFoundException {

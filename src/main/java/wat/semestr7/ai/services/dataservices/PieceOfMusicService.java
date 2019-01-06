@@ -4,12 +4,10 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.PieceOfMusicDto;
 import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
-import wat.semestr7.ai.entities.Performers;
 import wat.semestr7.ai.entities.PieceOfMusic;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.PieceOfMusicRepository;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,16 +23,23 @@ public class PieceOfMusicService
     }
 
     public void create(PieceOfMusicDto dto) {
-        pieceOfMusicRepository.save(mapper.pieceOfMusicDtoToPieceOfMusic(dto));
+    pieceOfMusicRepository.save(mapper.dtoToPieceOfMusic(dto));
+    }
+    public PieceOfMusic createAndReturn(PieceOfMusicDto dto) {
+        return pieceOfMusicRepository.save(mapper.dtoToPieceOfMusic(dto));
     }
 
-    public void delete(int id) {
+    public void delete(int id) throws EntityNotFoundException {
         Optional<PieceOfMusic> opt = pieceOfMusicRepository.findById(id);
         PieceOfMusic performer = opt.orElseThrow(() -> new EntityNotFoundException());
         pieceOfMusicRepository.delete(performer);
     }
 
     public List<PieceOfMusicDto> getAll() {
-        return pieceOfMusicRepository.findAll().stream().map(p -> mapper.pieceOfMusicToPieceOfMusicDto(p)).collect(Collectors.toList());
+        return pieceOfMusicRepository.findAll().stream().map(p -> mapper.pieceOfMusicToDto(p)).collect(Collectors.toList());
+    }
+
+    public PieceOfMusic getById(int id) throws EntityNotFoundException {
+        return pieceOfMusicRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
 }
