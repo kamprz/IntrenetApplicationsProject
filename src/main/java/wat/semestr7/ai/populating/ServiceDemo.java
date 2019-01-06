@@ -8,6 +8,7 @@ import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
 import wat.semestr7.ai.repositories.*;
 import wat.semestr7.ai.repositories.AuthorityRepository;
 import wat.semestr7.ai.repositories.RoleRepository;
+import wat.semestr7.ai.security.SecurityAuthorities;
 import wat.semestr7.ai.security.user.AppUser;
 import wat.semestr7.ai.security.user.Authority;
 import wat.semestr7.ai.security.user.Role;
@@ -65,12 +66,14 @@ public class ServiceDemo {
 
     public void addUser()
     {
-        Authority auth1 = new Authority("ADMIN_AUTHORITIES");
-        Authority auth2 = new Authority("APPROVE");
-        Authority auth3 = new Authority("READ_NOT_APPROVED");
+        Authority auth1 = new Authority(SecurityAuthorities.ADMIN);
+        Authority auth2 = new Authority(SecurityAuthorities.APPROVE);
+        Authority auth3 = new Authority(SecurityAuthorities.DELETE_NOT_APPROVED);
+        Authority auth4 = new Authority(SecurityAuthorities.DELETE_NOT_APPROVED);
         authorityRepository.save(auth1);
         authorityRepository.save(auth2);
         authorityRepository.save(auth3);
+        authorityRepository.save(auth4);
 
         List<Authority> adminAuth = new LinkedList<>();
         adminAuth.add(auth1);
@@ -79,6 +82,7 @@ public class ServiceDemo {
         List<Authority> approverAuth = new LinkedList<>();
         approverAuth.add(auth2);
         approverAuth.add(auth3);
+        approverAuth.add(auth4);
 
         Role adminRole = new Role("ADMIN",adminAuth);
         Role approverRole = new Role("APPROVER", approverAuth);

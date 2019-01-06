@@ -9,6 +9,7 @@ import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.PieceOfMusic;
 import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.entities.Ticket;
+import wat.semestr7.ai.exceptions.customexceptions.ConcertAlreadyApprovedException;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.ConcertRepository;
 import wat.semestr7.ai.repositories.PieceOfMusicRepository;
@@ -103,10 +104,18 @@ public class ConcertService
         Optional<Concert> concertOpt = concertRepo.findById(id);
         Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
         concert.setApproved(true);
+        concertRepo.save(concert);
     }
 
     public List<ConcertDetailsDto> getConcertDetailDtoList()
     {
         return concertRepo.getConcertDetailsList(new Date());
+    }
+
+    public void deleteNotApprovedConcert(int id) throws EntityNotFoundException, ConcertAlreadyApprovedException {
+        Optional<Concert> concertOpt = concertRepo.findById(id);
+        Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
+        if(!getConcert(id).isApproved()) concertRepo.delete(concert);
+        else throw new ConcertAlreadyApprovedException("This concert is already approved");
     }
 }

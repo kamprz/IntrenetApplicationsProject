@@ -44,6 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/paypal/**").permitAll()
                 .antMatchers("/discount").permitAll()
                 .antMatchers(HttpMethod.GET,"/concert/approved").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/concert/not-approved").hasAuthority(SecurityAuthorities.DELETE_NOT_APPROVED)
                 .antMatchers("/admin/**").hasAuthority(SecurityAuthorities.ADMIN)
                 .antMatchers(HttpMethod.GET,"/concert/not-approved").hasAuthority(SecurityAuthorities.READ_NOT_APPROVED)
                 .antMatchers(HttpMethod.POST,"/concert/approve").hasAuthority(SecurityAuthorities.APPROVE)

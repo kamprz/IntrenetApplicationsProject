@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import wat.semestr7.ai.exceptions.customexceptions.ConcertAlreadyApprovedException;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 
@@ -29,7 +30,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, ParseException.class,WrongEntityInRequestBodyException.class})
+    @ExceptionHandler({IllegalArgumentException.class, ParseException.class,WrongEntityInRequestBodyException.class, ConcertAlreadyApprovedException.class})
     protected ResponseEntity<Object> handleIllegalArgument(Exception ex)
     {
         RestApiError error = RestApiError.builder()

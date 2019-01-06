@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.ConcertDetailsDto;
 import wat.semestr7.ai.dtos.ConcertDto;
+import wat.semestr7.ai.exceptions.customexceptions.ConcertAlreadyApprovedException;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongDateFormatException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
@@ -36,6 +37,11 @@ public class ConcertController
     @PutMapping("/concert/approve")
     public void approveConcert(@RequestParam int id) throws EntityNotFoundException {
         service.approveConcert(id);
+    }
+
+    @DeleteMapping("/concert/not-approved/{id}")
+    public void deleteNotApprovedConcert(@PathVariable int id) throws ConcertAlreadyApprovedException, EntityNotFoundException {
+        service.deleteNotApprovedConcert(id);
     }
 
     @GetMapping(value = "/admin/concert")
