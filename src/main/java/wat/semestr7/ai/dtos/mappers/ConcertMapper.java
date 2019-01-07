@@ -6,14 +6,18 @@ import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.dtos.PieceOfMusicDto;
 import wat.semestr7.ai.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr7.ai.entities.Concert;
+import wat.semestr7.ai.entities.Performers;
 import wat.semestr7.ai.entities.PieceOfMusic;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.ConcertRoomRepository;
 import wat.semestr7.ai.repositories.PerformersRepository;
+import wat.semestr7.ai.services.dataservices.ConcertRoomService;
 import wat.semestr7.ai.services.dataservices.PieceOfMusicService;
 import wat.semestr7.ai.utils.DateUtils;
 
 import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ConcertMapper {
@@ -21,12 +25,15 @@ public class ConcertMapper {
     private PerformersRepository performersRepository;
     private ConcertRoomRepository concertRoomRepository;
     private PieceOfMusicService pieceOfMusicService;
+    private ConcertRoomService concertRoomService;
     private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
-    public ConcertMapper(PerformersRepository performersRepository, ConcertRoomRepository concertRoomRepository, PieceOfMusicService pieceOfMusicService) {
+    public ConcertMapper(PerformersRepository performersRepository, ConcertRoomRepository concertRoomRepository,
+                         PieceOfMusicService pieceOfMusicService, ConcertRoomService concertRoomService) {
         this.performersRepository = performersRepository;
         this.concertRoomRepository = concertRoomRepository;
         this.pieceOfMusicService = pieceOfMusicService;
+        this.concertRoomService = concertRoomService;
     }
 
     public Concert dtoToConcert(ConcertDto dto) throws ParseException, EntityNotFoundException {
@@ -50,6 +57,7 @@ public class ConcertMapper {
                 concert.addPieceOfMusic(pieceOfMusicService.createAndReturn(pomDto));
             }
         }
+        concert.setConcertRoom(concertRoomService.getConcertRoom());
         return concert;
     }
 

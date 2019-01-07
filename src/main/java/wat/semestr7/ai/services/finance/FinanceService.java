@@ -1,6 +1,7 @@
 package wat.semestr7.ai.services.finance;
 
 import org.mapstruct.factory.Mappers;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.ConcertDetailsDto;
 import wat.semestr7.ai.dtos.finance.ConcertFinanceSummaryDto;
@@ -20,6 +21,7 @@ import wat.semestr7.ai.utils.PriceUtils;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,6 +103,35 @@ public class FinanceService {
         }
         financeDto.setIncomeFromTickets(ticketIncome);
         return financeDto;
+    }
+
+    @Scheduled(cron = "0 0 */1 * * *")
+    public void financialSummaryOfEndedConcerts()
+    {
+        List<Concert> concertsToSummarize = concertService.getAllConcerts()
+                .stream()
+                .filter(c -> !c.isWasSummarized())
+                .filter(c -> c.getDate().compareTo(new Date()) > 0)
+                .collect(Collectors.toList());
+        for(Concert concert : concertsToSummarize)
+        {
+            BigDecimal concertCost = concert.getAdditionalOrganisationCosts()
+                    .add(concert.getConcertPerformers().getCostOfPersonnel())
+                    .add(concert.getConcertRoom().getRentCosts());
+
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDetails("Koncert : " + concert.getConcertTitle() + ". Data : " + concert.getDate());
+            transaction.setTitleTransaction("Opłaty za organizację koncertu");
+            transaction.setDate(new Date());
+            transaction.setTransactionSum(concertCost.multiply(new BigDecimal("-1")));
+
+            transaction.setAmountAfterTransaction(
+                    new BigDecimal(transactionService.getCurrentCash())
+                    .add(transaction.getTransactionSum()));
+            transactionService.saveTransaction(transaction);
+            concert.setWasSummarized(true);
+            concertService.saveConcert(concert);
+        }
     }
 
     public List<ConcertDetailsDto> getConcertDetailDtoList()

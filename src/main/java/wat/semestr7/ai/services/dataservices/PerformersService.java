@@ -29,8 +29,8 @@ public class PerformersService
                 .collect(Collectors.toList());
     }
 
-    public void create(PerformersDto dto) {
-        performersRepository.save(mapper.dtoToPerformers(dto));
+    public Performers create(PerformersDto dto) {
+        return performersRepository.save(mapper.dtoToPerformers(dto));
     }
 
     public void delete(int id) {

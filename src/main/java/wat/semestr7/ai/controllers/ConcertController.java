@@ -2,7 +2,6 @@ package wat.semestr7.ai.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wat.semestr7.ai.dtos.ConcertDetailsDto;
 import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.exceptions.customexceptions.ConcertAlreadyApprovedException;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
@@ -47,7 +46,7 @@ public class ConcertController
     @GetMapping(value = "/admin/concert")
     public ResponseEntity<List<ConcertDto>> getAllConcerts()
     {
-        return ResponseEntity.ok().body(service.getAllConcerts());
+        return ResponseEntity.ok().body(service.getAllConcertsDto());
     }
 
     @GetMapping("/admin/concert/{id}")

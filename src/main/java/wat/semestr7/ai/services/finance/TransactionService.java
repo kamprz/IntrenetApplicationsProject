@@ -49,4 +49,14 @@ public class TransactionService
     {
         return repo.findById(id);
     }
+
+    public Double getCurrentCash()
+    {
+        return repo.getCurrentCash();
+    }
+
+    public void saveTransaction(Transaction t)
+    {
+        repo.save(t);
+    }
 }

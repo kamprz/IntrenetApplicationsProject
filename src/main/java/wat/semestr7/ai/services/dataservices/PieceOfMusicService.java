@@ -25,6 +25,7 @@ public class PieceOfMusicService
     public void create(PieceOfMusicDto dto) {
     pieceOfMusicRepository.save(mapper.dtoToPieceOfMusic(dto));
     }
+
     public PieceOfMusic createAndReturn(PieceOfMusicDto dto) {
         return pieceOfMusicRepository.save(mapper.dtoToPieceOfMusic(dto));
     }

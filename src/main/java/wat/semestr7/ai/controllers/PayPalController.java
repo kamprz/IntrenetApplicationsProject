@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.PurchaseDto;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
+import wat.semestr7.ai.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.finance.PayPalService;
 
@@ -27,7 +28,7 @@ public class PayPalController {
     }
 
     @PostMapping(value = "/paypal/payment/complete")
-    public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, WrongEntityInRequestBodyException {
+    public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, WrongEntityInRequestBodyException, PaymentTimeoutException {
         checkIfCompletingPaymentRequestBodyIsCorrect(request);
         return ResponseEntity.ok().body(payPalService.completePayment(request));
     }

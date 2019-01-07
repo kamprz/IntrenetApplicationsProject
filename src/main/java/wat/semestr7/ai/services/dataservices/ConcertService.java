@@ -53,13 +53,16 @@ public class ConcertService
         return concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
     }
 
-    public List<ConcertDto> getAllConcerts() {
+    public List<ConcertDto> getAllConcertsDto() {
         return concertRepo.findAll().stream().map(c -> concertMapper.concertToDto(c)).collect(Collectors.toList());
+    }
+
+    public List<Concert> getAllConcerts(){
+        return concertRepo.findAll();
     }
 
     public void addConcert(ConcertDto concertDto) throws ParseException, EntityNotFoundException {
         Concert mappedConcert = concertMapper.dtoToConcert(concertDto);
-        mappedConcert.setConcertRoom(concertRoomService.getConcertRoom());
         concertRepo.save(mappedConcert);
     }
 
@@ -120,5 +123,10 @@ public class ConcertService
         Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
         if(!getConcert(id).isApproved()) concertRepo.delete(concert);
         else throw new ConcertAlreadyApprovedException("This concert is already approved");
+    }
+
+    public void saveConcert(Concert concert)
+    {
+        concertRepo.save(concert);
     }
 }

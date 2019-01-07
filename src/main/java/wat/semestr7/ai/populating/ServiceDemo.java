@@ -3,8 +3,11 @@ package wat.semestr7.ai.populating;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import wat.semestr7.ai.dtos.ConcertDto;
+import wat.semestr7.ai.dtos.PerformersDto;
+import wat.semestr7.ai.dtos.PieceOfMusicDto;
 import wat.semestr7.ai.dtos.mappers.ConcertMapper;
 import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.*;
 import wat.semestr7.ai.repositories.AuthorityRepository;
 import wat.semestr7.ai.repositories.RoleRepository;
@@ -12,19 +15,19 @@ import wat.semestr7.ai.security.SecurityAuthorities;
 import wat.semestr7.ai.security.user.AppUser;
 import wat.semestr7.ai.security.user.Authority;
 import wat.semestr7.ai.security.user.Role;
+import wat.semestr7.ai.services.dataservices.ConcertService;
 import wat.semestr7.ai.services.dataservices.DiscountService;
-import wat.semestr7.ai.utils.DateUtils;
+import wat.semestr7.ai.services.dataservices.PerformersService;
+import wat.semestr7.ai.services.dataservices.PieceOfMusicService;
 import wat.semestr7.ai.entities.*;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ServiceDemo {
-
+    private ConcertService concertService;
     private ConcertRepository concertRepository;
     private ConcertRoomRepository concertRoomRepository;
     private TicketRepository ticketRepository;
@@ -33,12 +36,21 @@ public class ServiceDemo {
     private DiscountService discountService;
     private RoleRepository roleRepository;
     private AuthorityRepository authorityRepository;
+    private PerformersService performersService;
+    private PieceOfMusicService pieceOfMusicService;
+    private PurchaseRepository purchaseRepository;
+    private TransactionRepository transactionRepository;
     private ConcertMapper concertMapper;
     private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
+    private static boolean isApproved = true;
+    private static int dateAdd = 0;
+    private static BigDecimal amountBefore = new BigDecimal("0.0");
+
     public ServiceDemo(ConcertRepository concertRepository, ConcertRoomRepository concertRoomRepository, TicketRepository ticketRepository,
-                       SeatRepository seatRepository, UserRepository userRepository, DiscountService discountService,
-                       RoleRepository roleRepository, AuthorityRepository authorityRepository, ConcertMapper concertMapper) {
+                       SeatRepository seatRepository, UserRepository userRepository, DiscountService discountService, RoleRepository roleRepository,
+                       AuthorityRepository authorityRepository, PerformersService performersService, PurchaseRepository purchaseRepository,
+                       ConcertMapper concertMapper, TransactionRepository transactionRepository) {
         this.concertRepository = concertRepository;
         this.concertRoomRepository = concertRoomRepository;
         this.ticketRepository = ticketRepository;
@@ -47,23 +59,85 @@ public class ServiceDemo {
         this.discountService = discountService;
         this.roleRepository = roleRepository;
         this.authorityRepository = authorityRepository;
+        this.performersService = performersService;
         this.concertMapper = concertMapper;
+        this.purchaseRepository = purchaseRepository;
+        this.transactionRepository = transactionRepository;
+
     }
 
-    public Concert testAddingConcert()  {
-        ConcertRoom concertRoom = getConcertRoom();
-        Performers performers = getPerformers();
-        List<PieceOfMusic> repertoire = getRepertoire();
-        Concert concert = getConcert(concertRoom,performers,repertoire);
-        concertRepository.save(concert);
-        concert.setIdConcert(2);
+    private static final Calendar calendar = Calendar.getInstance();
+    private static final String ORKIESTRA_SYMFONICZNA = "Pełna orkiestra symfoniczna";
+    private static final String ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI = "Orkiestra smyczkowa, organy i chór";
+
+    public void testAddingConcert(String date, String title, String ticketPrice, String performers)  {
+        List<PieceOfMusicDto> repertoire = getRepertoire();
+        ConcertDto concertDto = new ConcertDto();
+        concertDto.setApproved(isApproved);
+        isApproved = !isApproved;
+        concertDto.setConcertPerformers(performers);
+        concertDto.setTicketCost(new BigDecimal(ticketPrice));
+        concertDto.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
+        concertDto.setDate(date);
+
+        concertDto.setConcertTitle(title);
+        concertDto.setRepertoire(repertoire);
         try {
-            concert.setDate(DateUtils.parseDate("11/11/2018 19:00"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return concertRepository.save(concert);
+            Concert concert = concertRepository.save(concertMapper.dtoToConcert(concertDto));
+            calendar.setTime(concert.getDate());
+            addSoldTickets(concert);
+            BigDecimal concertCost = concert.getAdditionalOrganisationCosts().add(concert.getConcertRoom().getRentCosts()).add(concert.getConcertPerformers().getCostOfPersonnel());
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDetails("Koncert : " + concert.getConcertTitle() + ". Data : " + concert.getDate());
+            transaction.setTitleTransaction("Opłaty za organizację koncertu");
+            calendar.setTime(concert.getDate());
+            calendar.set(Calendar.MINUTE,calendar.get(Calendar.MINUTE) + 10);
+            transaction.setDate(calendar.getTime());
+            transaction.setTransactionSum(concertCost.multiply(new BigDecimal("-1")));
+            transaction.setAmountAfterTransaction(amountBefore.add(transaction.getTransactionSum()));
+            amountBefore = transaction.getAmountAfterTransaction();
+            transactionRepository.save(transaction);
+        } catch (ParseException e) { e.printStackTrace(); }
+        catch (EntityNotFoundException e) { e.printStackTrace(); }
     }
+
+    private void addSoldTickets(Concert concert)
+    {
+        calendar.setTime(concert.getDate());
+        calendar.set(Calendar.HOUR_OF_DAY,calendar.get(Calendar.HOUR_OF_DAY)-10);
+        for(int p = 2; p<9; p++)
+        {
+            Random random = new Random();
+            Purchase purchase = new Purchase();
+            purchase.setPaid(true);
+            purchase.setEmail("email@dot.com");
+            purchase.setPaypalID("123aldsalskd" + random.nextInt(123456));
+            purchase.setTimestamp(new Date());
+            List<Ticket> tickets = new LinkedList<>();
+            for (int i = 2; i < 9; i++)
+            {
+                Ticket ticket = new Ticket();
+                ticket.setDiscount(discountService.getByName("Normalny"));
+                ticket.setConcert(concert);
+                ticket.setSeat(seatRepository.findFirstByRowAndPosition(p,i));
+                ticket.setPurchase(purchase);
+                tickets.add(ticket);
+            }
+            purchase.setTickets(tickets);
+            purchaseRepository.save(purchase);
+            Transaction transaction = new Transaction();
+            transaction.setTransactionDetails("Koncert : " + concert.getConcertTitle() + ". Data : " + concert.getDate());
+            transaction.setTitleTransaction("Zakup biletów na koncert");
+            calendar.set(Calendar.MINUTE,calendar.get(Calendar.MINUTE) + 30);
+            transaction.setDate(calendar.getTime());
+
+            transaction.setTransactionSum(concert.getTicketCost().multiply(new BigDecimal("7")));
+            transaction.setAmountAfterTransaction(amountBefore.add(transaction.getTransactionSum()));
+            amountBefore = transaction.getAmountAfterTransaction();
+            transactionRepository.save(transaction);
+        }
+    }
+
 
     public void addUser()
     {
@@ -104,27 +178,20 @@ public class ServiceDemo {
         userRepository.save(approver);
     }
 
-    private List<PieceOfMusic> getRepertoire() {
-        List<PieceOfMusic> list = new LinkedList<>();
-        PieceOfMusic p1 = new PieceOfMusic();
+    private List<PieceOfMusicDto> getRepertoire() {
+        List<PieceOfMusicDto> list = new LinkedList<>();
+        PieceOfMusicDto p1 = new PieceOfMusicDto();
         p1.setComposer("J.S.Bach");
-        p1.setTitlePiece("Toccata and fugue d-minor");
+        p1.setTitle("Toccata and fugue d-minor");
         list.add(p1);
-        PieceOfMusic p2 = new PieceOfMusic();
-        p2.setTitlePiece("Symphonie IX");
+        PieceOfMusicDto p2 = new PieceOfMusicDto();
+        p2.setTitle("Symphonie IX");
         p2.setComposer("Ludwig van Beethoven");
         list.add(p2);
         return list;
     }
 
-    private Performers getPerformers() {
-        Performers performers = new Performers();
-        performers.setCostOfPersonnel(new BigDecimal("4000.00"));
-        performers.setDetails("Pełna orkiestra symfoniczna");
-        return performers;
-    }
-
-    private Concert getConcert(ConcertRoom concertRoom,Performers performers, List<PieceOfMusic> repertoire)
+    /*private Concert getConcert(ConcertRoom concertRoom,Performers performers, List<PieceOfMusic> repertoire)
     {
         Concert concert = new Concert();
         concert.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
@@ -137,14 +204,25 @@ public class ServiceDemo {
         concert.setTicketCost(new BigDecimal("100.00"));
         concert.setIdConcert(1);
         return concert;
+    }*/
 
+    private void setPerformers() {
+        PerformersDto performers = new PerformersDto();
+        performers.setCostOfPersonnel(new BigDecimal("3000.00"));
+        performers.setDetails(ORKIESTRA_SYMFONICZNA);
+        performersService.create(performers);
+
+        PerformersDto performers2 = new PerformersDto();
+        performers2.setCostOfPersonnel(new BigDecimal("4000.00"));
+        performers2.setDetails(ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI);
+        performersService.create(performers2);
     }
 
-    private ConcertRoom getConcertRoom()
+    private ConcertRoom setConcertRoom()
     {
         ConcertRoom concertRoom = new ConcertRoom();
         concertRoom.setConcertRoomName("Sala koncertowa Filharmonii Narodowej");
-        concertRoom.setRentCosts(new BigDecimal("2000.00"));
+        concertRoom.setRentCosts(new BigDecimal("1000.00"));
         concertRoom.setAddress("Warszawa ul. Jasna 5");
         List<Seat> seats = new LinkedList<>();
         for(int i=1;i<11;i++) for(int j=1;j<11;j++)
@@ -156,7 +234,7 @@ public class ServiceDemo {
             seats.add(s);
         }
         concertRoom.setSeats(seats);
-        return concertRoom;
+        return concertRoomRepository.save(concertRoom);
     }
 
     private void addDiscounts()
@@ -187,12 +265,17 @@ public class ServiceDemo {
             }
         }
     }
-    @PostConstruct
-    public ConcertDto populate()
+
+    public void populate()
     {
-        Concert concert = testAddingConcert();
+        setConcertRoom();
+        setPerformers();
         addDiscounts();
         addUser();
-        return concertMapper.concertToDto(concert);
+        for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-11-" + (10+dateAdd++) +"T19:00:00.000 UTC",
+                "Symfoniczny Koncert Niepodległościowy","110.00",ORKIESTRA_SYMFONICZNA);
+        for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-12-" + (10+dateAdd++) +"T19:00:00.000 UTC", "Koncert kolęd",
+                "120.00",ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI);
+
     }
 }

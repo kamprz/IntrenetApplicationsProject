@@ -25,18 +25,18 @@ public class Concert
     private BigDecimal ticketCost;
     @Column(columnDefinition = "boolean default false")
     private boolean isApproved;
+    @Column(columnDefinition = "boolean default false")
+    private boolean wasSummarized;
 
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinColumn(name="idConcertRoom")
     private ConcertRoom concertRoom;
 
-    @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinColumn(name="idPerformers")
     private Performers concertPerformers;
 
-    @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinTable(name = "repertoire",
             joinColumns = @JoinColumn(name = "idConcert"),
