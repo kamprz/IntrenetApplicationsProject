@@ -274,7 +274,7 @@ public class ServiceDemo {
         addDiscounts();
         for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-11-" + (10+dateAdd++) +"T19:00:00.000 UTC",
                 "Symfoniczny Koncert Niepodległościowy","110.00",ORKIESTRA_SYMFONICZNA);
-        for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-12-" + (10+dateAdd++) +"T19:00:00.000 UTC", "Koncert kolęd",
+        for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-12-" + (20+dateAdd++) +"T19:00:00.000 UTC", "Koncert kolęd",
                 "120.00",ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI);
 
     }
