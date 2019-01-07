@@ -21,6 +21,7 @@ import wat.semestr7.ai.services.dataservices.PerformersService;
 import wat.semestr7.ai.services.dataservices.PieceOfMusicService;
 import wat.semestr7.ai.entities.*;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -138,7 +139,7 @@ public class ServiceDemo {
         }
     }
 
-
+    @PostConstruct
     public void addUser()
     {
         Authority auth1 = new Authority(SecurityAuthorities.ADMIN);
@@ -271,7 +272,6 @@ public class ServiceDemo {
         setConcertRoom();
         setPerformers();
         addDiscounts();
-        addUser();
         for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-11-" + (10+dateAdd++) +"T19:00:00.000 UTC",
                 "Symfoniczny Koncert Niepodległościowy","110.00",ORKIESTRA_SYMFONICZNA);
         for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-12-" + (10+dateAdd++) +"T19:00:00.000 UTC", "Koncert kolęd",

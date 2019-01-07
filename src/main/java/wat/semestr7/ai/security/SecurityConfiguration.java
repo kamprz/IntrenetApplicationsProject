@@ -38,7 +38,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/populate").permitAll()
                 .antMatchers("/free-seat/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/paypal/**").permitAll()
@@ -47,6 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE,"/concert/not-approved").hasAuthority(SecurityAuthorities.DELETE_NOT_APPROVED)
                 .antMatchers(HttpMethod.GET,"/concert/not-approved").hasAuthority(SecurityAuthorities.READ_NOT_APPROVED)
                 .antMatchers(HttpMethod.POST,"/concert/approve").hasAuthority(SecurityAuthorities.APPROVE)
+                .antMatchers("/populate").hasAuthority(SecurityAuthorities.ADMIN)
                 .antMatchers("/admin/**").hasAuthority(SecurityAuthorities.ADMIN)
                 .anyRequest().authenticated()
                 .and()
