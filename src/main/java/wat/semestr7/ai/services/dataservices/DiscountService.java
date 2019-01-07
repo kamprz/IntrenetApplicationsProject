@@ -10,6 +10,7 @@ import wat.semestr7.ai.entities.Performers;
 import wat.semestr7.ai.repositories.DiscountRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,11 @@ public class DiscountService {
     }
 
     public List<DiscountDto> getAll() {
-        return repo.findAll().stream().map(d -> mapper.discountToDto(d)).collect(Collectors.toList());
+        return repo.findAll()
+                .stream()
+                .map(d -> mapper.discountToDto(d))
+                .sorted(Comparator.comparingInt(DiscountDto::getPercents))
+                .collect(Collectors.toList());
     }
 
     public void addDiscount(DiscountDto dto)

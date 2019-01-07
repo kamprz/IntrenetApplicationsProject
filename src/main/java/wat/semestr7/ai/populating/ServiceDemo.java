@@ -239,15 +239,15 @@ public class ServiceDemo {
 
     private void addDiscounts()
     {
-        Discount student = new Discount();
-        student.setName("Studencki");
-        student.setPercents(50);
-        discountService.addDiscount(mapper.discountToDto(student));
-
         Discount normal = new Discount();
         normal.setName("Normalny");
         normal.setPercents(0);
         discountService.addDiscount(mapper.discountToDto(normal));
+
+        Discount student = new Discount();
+        student.setName("Studencki");
+        student.setPercents(50);
+        discountService.addDiscount(mapper.discountToDto(student));
     }
 
     private void addTicketsOldOne(Concert concert)

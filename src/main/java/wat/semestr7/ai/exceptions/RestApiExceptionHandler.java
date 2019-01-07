@@ -55,6 +55,18 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+    @ExceptionHandler(org.hibernate.exception.ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolationException(Exception ex)
+    {
+        RestApiError error = RestApiError.builder()
+                .message("Nie można usunąć obiektu - jest on używany przez inny obiekt.")
+                .debugMessage(ex.toString())
+                .status(HttpStatus.NOT_ACCEPTABLE)
+                .build()
+                .setNow();
+        return buildResponseEntity(error);
+    }
+
     /*
     @ExceptionHandler(UsernameNotFoundException.class)
     protected ResponseEntity<Object> handleUsernameNotFound(Exception ex)
