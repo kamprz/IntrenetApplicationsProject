@@ -7,9 +7,9 @@ import wat.semestr7.ai.dtos.DiscountDto;
 import wat.semestr7.ai.dtos.mappers.EntityToDtoMapper;
 import wat.semestr7.ai.entities.Discount;
 import wat.semestr7.ai.entities.Performers;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.DiscountRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +32,14 @@ public class DiscountService {
 
     public Discount getByName(String name) throws EntityNotFoundException
     {
-        return repo.findById(name).orElseThrow(() -> new EntityNotFoundException());
+        Discount discount = repo.getDiscountByName(name);
+        if (discount == null) throw new EntityNotFoundException();
+        else return discount;
+    }
+
+    public Discount getById(int id) throws EntityNotFoundException
+    {
+        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
 
     public List<DiscountDto> getAll() {
@@ -48,9 +55,8 @@ public class DiscountService {
         repo.save(mapper.dtoToDiscount(dto));
     }
 
-    public void delete(String name)
-    {
-        Optional<Discount> opt = repo.findById(name);
+    public void delete(int id) throws EntityNotFoundException {
+        Optional<Discount> opt = repo.findById(id);
         Discount performer = opt.orElseThrow(() -> new EntityNotFoundException());
         repo.delete(performer);
     }

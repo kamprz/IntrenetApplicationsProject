@@ -3,6 +3,7 @@ package wat.semestr7.ai.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.DiscountDto;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.dataservices.DiscountService;
 
@@ -29,8 +30,7 @@ public class DiscountController {
     }
 
     @DeleteMapping("/admin/discount/{id}")
-    public void deleteDiscount(@PathVariable String id)
-    {
+    public void deleteDiscount(@PathVariable int id) throws EntityNotFoundException {
         service.delete(id);
     }
 

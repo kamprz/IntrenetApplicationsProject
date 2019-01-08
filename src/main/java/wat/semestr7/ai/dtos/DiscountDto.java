@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DiscountDto
 {
+    private int discountId;
     private String name;
     private int percents;
 }

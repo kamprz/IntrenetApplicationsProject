@@ -101,8 +101,7 @@ public class ServiceDemo {
         catch (EntityNotFoundException e) { e.printStackTrace(); }
     }
 
-    private void addSoldTickets(Concert concert)
-    {
+    private void addSoldTickets(Concert concert) throws EntityNotFoundException {
         calendar.setTime(concert.getDate());
         calendar.set(Calendar.HOUR_OF_DAY,calendar.get(Calendar.HOUR_OF_DAY)-10);
         for(int p = 2; p<9; p++)

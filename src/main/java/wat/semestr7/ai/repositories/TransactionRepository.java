@@ -21,7 +21,7 @@ public interface TransactionRepository extends CrudRepository<Transaction,Intege
 
     @Query(value = "select sum(c.ticket_cost - (c.ticket_cost * d.percents / 100))" +
             " from ticket t" +
-            " join discount d on d.name = t.name" +
+            " join discount d on d.discount_id = t.discount_id" +
             " join purchase p on p.id_purchase = t.id_purchase" +
             " join concert c on c.id_concert = t.id_concert" +
             " where p.id_purchase = :id"

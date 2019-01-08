@@ -35,7 +35,7 @@ public class PieceOfMusicController
     public void deletePieceOfMusic(@PathVariable Integer id) throws EntityNotFoundException {
         service.delete(id);
     }
-    
+
     private void checkIfRequestBodyIsCorrect(PieceOfMusicDto dto) throws WrongEntityInRequestBodyException {
         if(dto.getComposer() == null || dto.getComposer().isEmpty()) throw new WrongEntityInRequestBodyException("Composer of a piece is not set");
         if(dto.getTitle() == null || dto.getTitle().isEmpty()) throw new WrongEntityInRequestBodyException("Title of a piece is not set");

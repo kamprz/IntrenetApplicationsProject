@@ -80,7 +80,7 @@ public class ConcertMapper {
         return dto;
     }
 
-    public static ConcertFinanceSummaryDto concertToFinanceSummarySimpleFieldsMapping(Concert concert)
+    public ConcertFinanceSummaryDto concertToFinanceSummarySimpleFieldsMapping(Concert concert)
     {
         ConcertFinanceSummaryDto financeDto = new ConcertFinanceSummaryDto();
         financeDto.setConcertTitle(concert.getConcertTitle());

@@ -19,7 +19,7 @@ public class Ticket
     private int idTicket;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name = "name")
+    @JoinColumn(name = "discountId")
     private Discount discount;
 
     @ToString.Exclude

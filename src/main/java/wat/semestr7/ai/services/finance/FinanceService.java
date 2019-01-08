@@ -31,11 +31,13 @@ public class FinanceService {
     private TransactionService transactionService;
     private TicketService ticketService;
     private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
+    private ConcertMapper concertMapper;
 
-    public FinanceService(ConcertService concertService, TransactionService transactionService, TicketService ticketService) {
+    public FinanceService(ConcertService concertService, TransactionService transactionService, TicketService ticketService, ConcertMapper concertMapper) {
         this.concertService = concertService;
         this.transactionService = transactionService;
         this.ticketService = ticketService;
+        this.concertMapper = concertMapper;
     }
 
     public MonthSummaryDto getMonthSummary(int month, int year) {
@@ -90,7 +92,7 @@ public class FinanceService {
 
     public ConcertFinanceSummaryDto getConcertSummary(int id) throws EntityNotFoundException {
         Concert concert = concertService.getConcert(id);
-        ConcertFinanceSummaryDto financeDto = ConcertMapper.concertToFinanceSummarySimpleFieldsMapping(concert);
+        ConcertFinanceSummaryDto financeDto = concertMapper.concertToFinanceSummarySimpleFieldsMapping(concert);
 
         List<Ticket> allTicketsSold = ticketService.getAllTicketsByConcert(concert);
         financeDto.setAmountOfTicketsSold(allTicketsSold.size());
@@ -102,6 +104,12 @@ public class FinanceService {
             ticketIncome = ticketIncome.add(PriceUtils.getTicketPrice(concert.getTicketCost(),t.getDiscount().getPercents()));
         }
         financeDto.setIncomeFromTickets(ticketIncome);
+
+        BigDecimal balance = ticketIncome
+                        .add(financeDto.getAdditionalConcertOrganisationCosts().multiply(new BigDecimal("-1")))
+                        .add(financeDto.getConcertRoomRentalCost().multiply(new BigDecimal(-1)))
+                        .add(financeDto.getPerformersCost().multiply(new BigDecimal("-1")));
+        financeDto.setBalance(balance);
         return financeDto;
     }
 

@@ -18,11 +18,12 @@ public class ConcertFinanceSummaryDto
     private String concertRoomAddress;
     private String concertPerformers;
 
-    private BigDecimal ticketCost;
     private BigDecimal additionalConcertOrganisationCosts;
     private BigDecimal performersCost;
     private BigDecimal concertRoomRentalCost;
+    private BigDecimal ticketCost;
 
     private int amountOfTicketsSold;
     private BigDecimal incomeFromTickets;
+    private BigDecimal balance;
 }

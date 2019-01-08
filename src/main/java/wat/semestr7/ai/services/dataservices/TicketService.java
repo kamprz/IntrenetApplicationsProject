@@ -7,6 +7,7 @@ import wat.semestr7.ai.entities.Concert;
 import wat.semestr7.ai.entities.Purchase;
 import wat.semestr7.ai.entities.Seat;
 import wat.semestr7.ai.entities.Ticket;
+import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.repositories.TicketRepository;
 
 import java.util.Date;
@@ -25,8 +26,7 @@ public class TicketService
         this.discountService = discountService;
     }
 
-    public void buyTicket(TicketDto ticketDto, Concert concert, Purchase purchase)
-    {
+    public void buyTicket(TicketDto ticketDto, Concert concert, Purchase purchase) throws EntityNotFoundException {
         Seat seat = seatService.getSeatByRowAndPosition(ticketDto.getSeatRow(),ticketDto.getSeatCol());
         Ticket ticket = new Ticket();
         ticket.setSeat(seat);

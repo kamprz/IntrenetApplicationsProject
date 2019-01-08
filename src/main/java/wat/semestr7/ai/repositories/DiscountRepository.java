@@ -6,7 +6,7 @@ import wat.semestr7.ai.entities.Discount;
 
 import java.util.List;
 
-public interface DiscountRepository extends CrudRepository<Discount,String>{
+public interface DiscountRepository extends CrudRepository<Discount,Integer>{
     Discount getDiscountByName(String name);
 
     List<Discount> findAll();
