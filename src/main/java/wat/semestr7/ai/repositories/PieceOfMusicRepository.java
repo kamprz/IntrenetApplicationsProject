@@ -10,4 +10,6 @@ import java.util.List;
 public interface PieceOfMusicRepository extends CrudRepository<PieceOfMusic,Integer>
 {
     List<PieceOfMusic> findAll();
+
+    PieceOfMusic findFirstByTitlePieceAndComposer(String name, String composer);
 }

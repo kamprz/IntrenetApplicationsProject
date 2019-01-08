@@ -44,7 +44,6 @@ public class ServiceDemo {
     private ConcertMapper concertMapper;
     private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
-    private static boolean isApproved = true;
     private static int dateAdd = 0;
     private static BigDecimal amountBefore = new BigDecimal("0.0");
 
@@ -67,15 +66,15 @@ public class ServiceDemo {
 
     }
 
-    private static final Calendar calendar = Calendar.getInstance();
-    private static final String ORKIESTRA_SYMFONICZNA = "Pełna orkiestra symfoniczna";
-    private static final String ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI = "Orkiestra smyczkowa, organy i chór";
+    private final Calendar calendar = Calendar.getInstance();
+    private final String ORKIESTRA_SYMFONICZNA = "Pełna orkiestra symfoniczna";
+    private final String ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI = "Orkiestra smyczkowa, organy i chór";
+    private List<PieceOfMusicDto> repertoireSymph = new LinkedList<>();
+    private List<PieceOfMusicDto> repertoireCarols = new LinkedList<>();
 
-    public void testAddingConcert(String date, String title, String ticketPrice, String performers)  {
-        List<PieceOfMusicDto> repertoire = getRepertoire();
+    public void testAddingConcert(String date, String title, String ticketPrice, String performers, List<PieceOfMusicDto> repertoire)  {
         ConcertDto concertDto = new ConcertDto();
-        concertDto.setApproved(isApproved);
-        isApproved = !isApproved;
+        concertDto.setApproved(true);
         concertDto.setConcertPerformers(performers);
         concertDto.setTicketCost(new BigDecimal(ticketPrice));
         concertDto.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
@@ -179,17 +178,20 @@ public class ServiceDemo {
         userRepository.save(approver);
     }
 
-    private List<PieceOfMusicDto> getRepertoire() {
-        List<PieceOfMusicDto> list = new LinkedList<>();
+    private void setRepertoire() {
         PieceOfMusicDto p1 = new PieceOfMusicDto();
         p1.setComposer("J.S.Bach");
         p1.setTitle("Toccata and fugue d-minor");
-        list.add(p1);
+        repertoireSymph.add(p1);
         PieceOfMusicDto p2 = new PieceOfMusicDto();
         p2.setTitle("Symphonie IX");
         p2.setComposer("Ludwig van Beethoven");
-        list.add(p2);
-        return list;
+        repertoireSymph.add(p2);
+
+        PieceOfMusicDto carols = new PieceOfMusicDto();
+        carols.setTitle("Polskie kolędy");
+        carols.setComposer("Stefan Stuligrosz");
+        repertoireCarols.add(carols);
     }
 
     /*private Concert getConcert(ConcertRoom concertRoom,Performers performers, List<PieceOfMusic> repertoire)
@@ -217,6 +219,16 @@ public class ServiceDemo {
         performers2.setCostOfPersonnel(new BigDecimal("4000.00"));
         performers2.setDetails(ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI);
         performersService.create(performers2);
+
+        PerformersDto performers3 = new PerformersDto();
+        performers3.setDetails("Orkiestra smyczkowa");
+        performers3.setCostOfPersonnel(new BigDecimal("1800"));
+        performersService.create(performers3);
+
+        PerformersDto performers4 = new PerformersDto();
+        performers4.setDetails("Orkiestra dęta");
+        performers4.setCostOfPersonnel(new BigDecimal("1000"));
+        performersService.create(performers4);
     }
 
     private ConcertRoom setConcertRoom()
@@ -245,6 +257,11 @@ public class ServiceDemo {
         normal.setPercents(0);
         discountService.addDiscount(mapper.discountToDto(normal));
 
+        Discount smallStudent = new Discount();
+        smallStudent.setName("Uczniowski");
+        smallStudent.setPercents(30);
+        discountService.addDiscount(mapper.discountToDto(smallStudent));
+
         Discount student = new Discount();
         student.setName("Studencki");
         student.setPercents(50);
@@ -272,10 +289,39 @@ public class ServiceDemo {
         setConcertRoom();
         setPerformers();
         addDiscounts();
+        setRepertoire();
         for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-11-" + (10+dateAdd++) +"T19:00:00.000 UTC",
-                "Symfoniczny Koncert Niepodległościowy","110.00",ORKIESTRA_SYMFONICZNA);
+                "Symfoniczny Koncert Niepodległościowy","110.00",ORKIESTRA_SYMFONICZNA,repertoireSymph);
         for(int i = 0 ; i<4 ; i++) testAddingConcert("2018-12-" + (20+dateAdd++) +"T19:00:00.000 UTC", "Koncert kolęd",
-                "120.00",ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI);
+                "120.00",ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI,repertoireCarols);
+        try { setFutureConcerts(); }
+        catch (ParseException e) { e.printStackTrace(); }
+        catch (EntityNotFoundException e) { e.printStackTrace(); }
 
+    }
+
+    private void setFutureConcerts() throws ParseException, EntityNotFoundException {
+        ConcertDto concertDto = new ConcertDto();
+        concertDto.setApproved(true);
+        concertDto.setConcertPerformers(ORKIESTRA_SYMFONICZNA);
+        concertDto.setTicketCost(new BigDecimal("100"));
+        concertDto.setAdditionalOrganisationCosts(new BigDecimal("1300.00"));
+        concertDto.setDate("2019-01-20T19:00:00.000 UTC");
+
+        concertDto.setConcertTitle("Koncert symfoniczny");
+        concertDto.setRepertoire(repertoireSymph);
+        concertDto.setApproved(true);
+        concertRepository.save(concertMapper.dtoToConcert(concertDto));
+
+        ConcertDto concertDto2 = new ConcertDto();
+        concertDto2.setApproved(true);
+        concertDto2.setConcertPerformers(ORKIESTRA_SYMFONICZNA);
+        concertDto2.setTicketCost(new BigDecimal("120"));
+        concertDto2.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
+        concertDto2.setDate("2019-01-21T18:00:00.000 UTC");
+        concertDto2.setApproved(false);
+        concertDto2.setConcertTitle("Koncert symfoniczny");
+        concertDto2.setRepertoire(repertoireSymph);
+        concertRepository.save(concertMapper.dtoToConcert(concertDto2));
     }
 }

@@ -51,7 +51,7 @@ public class ConcertMapper {
         for(PieceOfMusicDto pomDto : dto.getRepertoire())
         {
             try {
-                concert.addPieceOfMusic(pieceOfMusicService.getById(pomDto.getIdPiece()));
+                concert.addPieceOfMusic(pieceOfMusicService.getByNameAndComposer(pomDto.getTitle(),pomDto.getComposer()));
             }
             catch (EntityNotFoundException e){
                 concert.addPieceOfMusic(pieceOfMusicService.createAndReturn(pomDto));

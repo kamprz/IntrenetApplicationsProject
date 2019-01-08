@@ -43,4 +43,10 @@ public class PieceOfMusicService
     public PieceOfMusic getById(int id) throws EntityNotFoundException {
         return pieceOfMusicRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
+
+    public PieceOfMusic getByNameAndComposer(String name, String composer) throws EntityNotFoundException {
+        PieceOfMusic pom = pieceOfMusicRepository.findFirstByTitlePieceAndComposer(name,composer);
+        if(pom == null) throw new EntityNotFoundException();
+        else return pom;
+    }
 }

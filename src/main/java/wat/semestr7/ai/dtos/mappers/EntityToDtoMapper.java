@@ -34,6 +34,7 @@ public interface EntityToDtoMapper {
     //Piece of Music:
     @Mapping(target = "titlePiece", source = "title")
     PieceOfMusic dtoToPieceOfMusic(PieceOfMusicDto dto);
+
     @Mapping(target = "title", source = "titlePiece")
     PieceOfMusicDto pieceOfMusicToDto(PieceOfMusic pieceOfMusic);
 
