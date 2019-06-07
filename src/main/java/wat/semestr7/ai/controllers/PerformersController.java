@@ -3,7 +3,6 @@ package wat.semestr7.ai.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.PerformersDto;
-import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.dataservices.PerformersService;
 
 import javax.validation.Valid;
@@ -25,8 +24,7 @@ public class PerformersController
     }
 
     @RequestMapping(method = {RequestMethod.POST,RequestMethod.PUT},value = "/admin/performer")
-    public void postPerformers(@RequestBody PerformersDto dto) throws WrongEntityInRequestBodyException {
-        checkIfRequestBodyIsCorrect(dto);
+    public void postPerformers(@RequestBody @Valid PerformersDto dto){
         service.create(dto);
     }
 
@@ -36,7 +34,4 @@ public class PerformersController
         service.delete(id);
     }
 
-    private void checkIfRequestBodyIsCorrect(@Valid PerformersDto dto) throws WrongEntityInRequestBodyException {
-        if(dto.getCostOfPersonnel()==null || dto.getCostOfPersonnel().doubleValue()==0.0) throw new WrongEntityInRequestBodyException("Cost of personel must be set");
-    }
 }
