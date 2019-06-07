@@ -47,4 +47,31 @@ public interface EntityToDtoMapper {
     default String dateToString(Date date) {
         return DateUtils.formatDate(date);
     }
+
+    /*
+    @Named("pomDtoToPom")
+    @Mapping(target = "titlePiece", source = "title")
+    PieceOfMusic dtoToPieceOfMusic(PieceOfMusicDto dto);
+
+    @Named("dtoToPom")
+    @Mapping(target = "title", source = "titlePiece")
+    PieceOfMusicDto pieceOfMusicToDto(PieceOfMusic pieceOfMusic);
+
+    @Mappings({
+            @Mapping(source = "concertRoom.concertRoomName", target = "concertRoomName"),
+            @Mapping(source = "concertRoom.address", target = "concertRoomAddress"),
+            @Mapping(source = "date", target = "date", qualifiedByName = "dateToString"),
+            @Mapping(source = "repertoire", target = "repertoire", qualifiedByName = "pomListToDto")
+    })
+    ConcertDto concertToDto(Concert concert);
+
+    @Named("pomListToDto")
+    default List<PieceOfMusicDto> pomListToDto (List<PieceOfMusic> repertoire){
+        List<PieceOfMusicDto> dtos = new LinkedList<>();
+        for(PieceOfMusic pom : repertoire){
+            dtos.add(pieceOfMusicToDto(pom));
+        }
+        return dtos;
+    }
+     */
 }
