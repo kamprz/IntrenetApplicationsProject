@@ -22,8 +22,7 @@ public class PayPalController {
     }
 
     @PostMapping(value = "/paypal/payment/make")
-    public ResponseEntity<String> makePayment(@RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException, WrongEntityInRequestBodyException {
-        checkIfMakingPaymentRequestBodyIsCorrect(purchaseDto);
+    public ResponseEntity<String> makePayment(@RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
         return ResponseEntity.ok().body(payPalService.createPayment(purchaseDto));
     }
 
@@ -31,13 +30,6 @@ public class PayPalController {
     public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, WrongEntityInRequestBodyException, PaymentTimeoutException {
         checkIfCompletingPaymentRequestBodyIsCorrect(request);
         return ResponseEntity.ok().body(payPalService.completePayment(request));
-    }
-
-
-    private void checkIfMakingPaymentRequestBodyIsCorrect(PurchaseDto dto) throws WrongEntityInRequestBodyException {
-        if(dto.getTickets() == null || dto.getTickets().isEmpty()) throw new WrongEntityInRequestBodyException("There must be any ticket assigned to this purchase");
-        if(dto.getConcertId() == null) throw new WrongEntityInRequestBodyException("Purchase must be assigned to a concert");
-        if(dto.getEmail() == null || dto.getEmail().isEmpty()) throw new WrongEntityInRequestBodyException("There must be an email assigned to a purchase");
     }
 
     private void checkIfCompletingPaymentRequestBodyIsCorrect(HttpServletRequest request) throws WrongEntityInRequestBodyException {

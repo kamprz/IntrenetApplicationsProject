@@ -6,9 +6,9 @@ import wat.semestr7.ai.dtos.ConcertDto;
 import wat.semestr7.ai.exceptions.customexceptions.ConcertAlreadyApprovedException;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr7.ai.exceptions.customexceptions.WrongDateFormatException;
-import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.dataservices.ConcertService;
 
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class ConcertController
     }
 
     @RequestMapping(value = "/admin/concert", method = {RequestMethod.POST,RequestMethod.PUT})
-    public void addOrUpdateConcert(@RequestBody ConcertDto concertDto) throws ParseException, WrongEntityInRequestBodyException, WrongDateFormatException, EntityNotFoundException {
+    public void addOrUpdateConcert(@RequestBody ConcertDto concertDto) throws ParseException, WrongDateFormatException, EntityNotFoundException {
         checkIfRequestBodyIsCorrect(concertDto);
         service.addConcert(concertDto);
     }
@@ -65,13 +65,8 @@ public class ConcertController
         service.deleteConcert(id);
     }
 
-    private void checkIfRequestBodyIsCorrect(ConcertDto dto) throws WrongEntityInRequestBodyException, WrongDateFormatException {
+    private void checkIfRequestBodyIsCorrect(@Valid ConcertDto dto) throws WrongDateFormatException {
         final String dateFormatRegex = "\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}.\\d{1,3} UTC";
-        if(dto.getConcertPerformers() == null || dto.getConcertPerformers().isEmpty()) throw new WrongEntityInRequestBodyException("Performers of a concert must be set");
-        if(dto.getConcertTitle() == null || dto.getConcertTitle().isEmpty()) throw new WrongEntityInRequestBodyException("Concert title must be set");
-        if(dto.getDate() == null) throw new WrongEntityInRequestBodyException("Date of a concert must be set");
         if(!dto.getDate().matches(dateFormatRegex)) throw new WrongDateFormatException("Wrong date format. Used one is: dd/MM/yyyy HH:mm");
-        if(dto.getTicketCost() == null) throw new WrongEntityInRequestBodyException("Ticket price must be set for a concert");
-        if(dto.getRepertoire() == null || dto.getRepertoire().size()==0) throw new WrongEntityInRequestBodyException("Concert must has a repertoire");
     }
 }

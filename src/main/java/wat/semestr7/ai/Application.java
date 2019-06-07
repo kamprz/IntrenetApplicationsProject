@@ -11,13 +11,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableAutoConfiguration
 @EnableJpaRepositories
 @EnableAspectJAutoProxy
 @EnableScheduling
 @EnableTransactionManagement
 @SpringBootApplication
-@ComponentScan(basePackages = "wat.semestr7.ai")
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

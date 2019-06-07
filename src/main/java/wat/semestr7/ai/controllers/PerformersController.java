@@ -6,6 +6,7 @@ import wat.semestr7.ai.dtos.PerformersDto;
 import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.dataservices.PerformersService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,8 +36,7 @@ public class PerformersController
         service.delete(id);
     }
 
-    private void checkIfRequestBodyIsCorrect(PerformersDto dto) throws WrongEntityInRequestBodyException {
-        if(dto.getDetails() == null || dto.getDetails().isEmpty()) throw new WrongEntityInRequestBodyException("Details of performers are not set");
+    private void checkIfRequestBodyIsCorrect(@Valid PerformersDto dto) throws WrongEntityInRequestBodyException {
         if(dto.getCostOfPersonnel()==null || dto.getCostOfPersonnel().doubleValue()==0.0) throw new WrongEntityInRequestBodyException("Cost of personel must be set");
     }
 }

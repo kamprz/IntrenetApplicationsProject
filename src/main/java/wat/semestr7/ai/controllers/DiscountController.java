@@ -4,9 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr7.ai.dtos.DiscountDto;
 import wat.semestr7.ai.exceptions.customexceptions.EntityNotFoundException;
-import wat.semestr7.ai.exceptions.customexceptions.WrongEntityInRequestBodyException;
 import wat.semestr7.ai.services.dataservices.DiscountService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,8 +24,7 @@ public class DiscountController {
     }
 
     @RequestMapping(method = {RequestMethod.POST,RequestMethod.PUT},value = "/admin/discount")
-    public void postDiscount(@RequestBody DiscountDto dto) throws WrongEntityInRequestBodyException {
-        checkIfRequestBodyIsCorrect(dto);
+    public void postDiscount(@RequestBody @Valid DiscountDto dto){
         service.addDiscount(dto);
     }
 
@@ -33,9 +32,4 @@ public class DiscountController {
     public void deleteDiscount(@PathVariable int id) throws EntityNotFoundException {
         service.delete(id);
     }
-
-    private void checkIfRequestBodyIsCorrect(DiscountDto dto) throws WrongEntityInRequestBodyException {
-        if(dto.getName() == null || dto.getName().isEmpty()) throw new WrongEntityInRequestBodyException("Discount must be named");
-    }
-
 }

@@ -7,6 +7,8 @@ import lombok.ToString;
 import wat.semestr7.ai.entities.Ticket;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -14,8 +16,11 @@ import java.util.List;
 @ToString
 public class PurchaseDto
 {
+    @NotNull
     private Integer concertId;
     private boolean isPaid;
+    @NotEmpty
     private String email;
+    @NotEmpty
     private List<TicketDto> tickets;
 }
