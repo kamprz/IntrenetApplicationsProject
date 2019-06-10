@@ -1,4 +1,4 @@
-package wat.semestr7.ai;
+package wat.semestr7.tim;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
