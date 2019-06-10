@@ -3,3 +3,10 @@ daty w :
 - purchase
 - transaction
 - dto.finance.transactionConcertDetails
+
+
+
+
+
+
+approved przesylac jako parametr approved a nie isApproved

@@ -53,7 +53,7 @@ public interface EntityToDtoMapper {
                 @Mapping(source = "transactionDetails", target = "transactionDetails")})
     TransactionDto transactionToDto(Transaction transactionDto);
 
-    
+
 
     @Named("repertoireToDto")
     default List<PieceOfMusicDto> repertoireToDto (List<PieceOfMusic> repertoire){
