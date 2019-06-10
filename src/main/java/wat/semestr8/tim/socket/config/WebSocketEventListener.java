@@ -1,7 +1,5 @@
-package wat.semestr7.ai.socket.config;
+package wat.semestr8.tim.socket.config;
 
-import com.example.chat.filh.ws.SocketService;
-import com.example.chat.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +9,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import wat.semestr7.ai.socket.service.SocketService;
-import wat.semestr7.ai.socket.service.model.Message;
+import wat.semestr8.tim.socket.service.SocketService;
+import wat.semestr8.tim.socket.service.model.Message2;
+import wat.semestr8.tim.socket.service.model.SocketMessage;
 
 @Component
 public class WebSocketEventListener {
@@ -36,19 +35,13 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnect (SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String androidId = (String) headerAccessor.getSessionAttributes().get("id");
+        String typeStr = (String) headerAccessor.getSessionAttributes().get("type");
+        SocketMessage.MessageType type = SocketMessage.MessageType.valueOf(typeStr);
 
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
-        socketService.disconnect(1,username);
 
-        if( username != null) {
-            logger.info("User disconnected: " + username);
-
-            Message message = new Message();
-            message.setType(Message.MessageType.LEAVE);
-            message.setSender(username);
-            System.out.println("I am sending a message");
-            System.out.println("subscribe address: " + subscribeAddress);
-            int concertId = socketService.getConcertToWhichUserWasConnected(username);
+        if( androidId != null && typeStr != null) {
+            socketService.disconnect(androidId,type);
             messagingTemplate.convertAndSend(subscribeAddress+"/"+concertId, message);
         }
     }

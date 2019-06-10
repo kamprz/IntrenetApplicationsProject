@@ -1,4 +1,4 @@
-package wat.semestr7.ai.socket.config;
+package wat.semestr8.tim.socket.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -6,8 +6,9 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-import wat.semestr7.ai.socket.service.SocketService;
-import wat.semestr7.ai.socket.service.model.Message;
+import wat.semestr8.tim.socket.service.SocketService;
+import wat.semestr8.tim.socket.service.model.Message2;
+import wat.semestr8.tim.socket.service.model.SocketMessage;
 
 import javax.validation.Valid;
 
@@ -27,20 +28,17 @@ public class SocketController {
     //musze dostac idkoncertu
     //"10_9_t_123456789"
     @MessageMapping("/socket.sendMessage")
-    public Message send (@Valid @Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
-        System.out.println("I am getting a message : " + message.getContent());
+    public SocketMessage send (@Valid @Payload SocketMessage message, SimpMessageHeaderAccessor headerAccessor) {
+        String s = socketService.seatOccupationChanged(message);
 
-        String s = socketService.seatOccupationChanged(1, message.getContent());
-        System.out.println("controller resulted in " + s);
         messagingTemplate.convertAndSend(subscribeAddress,message);
         return message;
     }
 
     @MessageMapping("/socket.addUser")
     //@SendTo("/topic/public")
-    public Message addUser(@Valid @Payload Message message, SimpMessageHeaderAccessor headerAccessor) {
+    public Message2 addUser(@Valid @Payload Message2 message, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("username", message.getSender());
-        System.out.println("HEADER: \n " + headerAccessor);
         messagingTemplate.convertAndSend(subscribeAddress,message);
         return message;
     }

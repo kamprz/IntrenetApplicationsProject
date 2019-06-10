@@ -97,7 +97,7 @@ public class ServiceDemo {
             transaction.setAmountAfterTransaction(amountBefore.add(transaction.getTransactionSum()));
             amountBefore = transaction.getAmountAfterTransaction();
             transactionRepository.save(transaction);
-        } catch (ParseException e) { e.printStackTrace(); }
+        }
         catch (EntityNotFoundException e) { e.printStackTrace(); }
     }
 

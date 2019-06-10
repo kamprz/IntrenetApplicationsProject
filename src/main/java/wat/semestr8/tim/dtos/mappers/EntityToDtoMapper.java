@@ -53,13 +53,15 @@ public interface EntityToDtoMapper {
             @Mapping(source = "concertPerformers.details", target = "concertPerformers"),
             @Mapping(source = "concertPerformers.costOfPersonnel", target = "performersCost"),
             @Mapping(source = "additionalOrganisationCosts", target = "additionalConcertOrganisationCosts"),
-            @Mapping(source = "date", target = "date", qualifiedByName = "dateToString"),
-            @Mapping(source = "repertoire", target = "repertoire", qualifiedByName = "pomListToDto")
+            @Mapping(source = "date", target = "date", qualifiedByName = "dateToString")//,
+           // @Mapping(source = "repertoire", target = "repertoire", qualifiedByName = "pomListToDto")
     })
     ConcertFinanceSummaryDto concertToFinanceSummary(Concert concert);
+/*
+private String concertTitle;
 
-
-
+    private BigDecimal ticketCost;
+*/
 
     //TransactionDto
     @Mappings({@Mapping( source = "date", target = "date", qualifiedByName = "dateToString"),
@@ -94,7 +96,11 @@ public interface EntityToDtoMapper {
     @Named("utcToDate")
     default Date utcToDate(String utc) throws ParseException { return DateUtils.utcToDate(utc); }
 
-    @Mapping(source = "date", target = "date", qualifiedByName = "utcToDate")
+    @Mappings({
+            @Mapping(source = "date", target = "date", qualifiedByName = "utcToDate"),
+            @Mapping(target = "concertPerformers",ignore = true)
+    })
+
     Concert dtoToConcert(ConcertDto dto);
 
 }

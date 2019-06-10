@@ -1,8 +1,15 @@
-package wat.semestr7.ai.socket.service.model;
+package wat.semestr8.tim.socket.service.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import wat.semestr8.tim.dtos.SeatDto;
+
+@Getter
+@AllArgsConstructor
+@ToString
 public class SeatOccupationChangedWsMess {
-    public String row;
-    public String col;
+    public SeatDto seat;
     public MessageType type;
     public String userId;
 
@@ -11,35 +18,4 @@ public class SeatOccupationChangedWsMess {
         UNLOCKED
     }
 
-    public SeatOccupationChangedWsMess(String row, String col, MessageType type, String userId) {
-        this.row = row;
-        this.col = col;
-        this.type = type;
-        this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "SeatOccupationChangedWsMess{" +
-                "row='" + row + '\'' +
-                ", col='" + col + '\'' +
-                ", type=" + type +
-                '}';
-    }
-
-    public String getRow() {
-        return row;
-    }
-
-    public String getCol() {
-        return col;
-    }
-
-    public MessageType getType() {
-        return type;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
 }

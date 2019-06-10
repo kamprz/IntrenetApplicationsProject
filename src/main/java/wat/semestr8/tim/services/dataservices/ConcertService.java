@@ -40,7 +40,7 @@ public class ConcertService
     {
         Optional<Concert> concertOpt = concertRepo.findById(id);
         Concert concert = concertOpt.orElseThrow(() -> new EntityNotFoundException("Such concert does not exist"));
-        return concertMapper.concertToDto(concert);
+        return mapper.concertToDto(concert);
     }
 
     public Concert getConcert(int id) throws EntityNotFoundException
@@ -50,7 +50,7 @@ public class ConcertService
     }
 
     public List<ConcertDto> getAllConcertsDto() {
-        return concertRepo.findAll().stream().map(c -> concertMapper.concertToDto(c)).collect(Collectors.toList());
+        return concertRepo.findAll().stream().map(c -> mapper.concertToDto(c)).collect(Collectors.toList());
     }
 
     public List<Concert> getAllConcerts(){
@@ -73,7 +73,7 @@ public class ConcertService
         return concertRepo.findAll().stream()
                 .filter(c -> (!c.isApproved()))
                 .filter(this::isBeforeConcertDate)
-                .map(c -> concertMapper.concertToDto(c))
+                .map(c -> mapper.concertToDto(c))
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +82,7 @@ public class ConcertService
         return concertRepo.findAll().stream()
                 .filter(Concert::isApproved)
                 .filter(this::isBeforeConcertDate)
-                .map(c -> concertMapper.concertToDto(c))
+                .map(c -> mapper.concertToDto(c))
                 .collect(Collectors.toList());
     }
 
