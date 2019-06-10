@@ -13,4 +13,3 @@ public class TransactionConcertDetails {
     private String concertTitle;
     private Date date;
 }
-

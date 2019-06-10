@@ -4,15 +4,20 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 import wat.semestr7.ai.dtos.*;
 import wat.semestr7.ai.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr7.ai.dtos.finance.TransactionDto;
 import wat.semestr7.ai.entities.*;
 import wat.semestr7.ai.others.ConcertDetails;
+import wat.semestr7.ai.repositories.ConcertRepository;
+import wat.semestr7.ai.repositories.ConcertRoomRepository;
 import wat.semestr7.ai.utils.DateUtils;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Mapper
 public interface EntityToDtoMapper {
@@ -38,40 +43,45 @@ public interface EntityToDtoMapper {
     @Mapping(target = "title", source = "titlePiece")
     PieceOfMusicDto pieceOfMusicToDto(PieceOfMusic pieceOfMusic);
 
-    //TransactionDto
-    @Mappings({@Mapping( source = "date", target = "date", qualifiedByName = "dateToString"),
-                @Mapping(source = "transactionDetails", target = "transactionDetails")})
-    TransactionDto transactionToDto(Transaction transactionDto);
-
     @Named("dateToString")
     default String dateToString(Date date) {
         return DateUtils.formatDate(date);
     }
 
-    /*
-    @Named("pomDtoToPom")
-    @Mapping(target = "titlePiece", source = "title")
-    PieceOfMusic dtoToPieceOfMusic(PieceOfMusicDto dto);
+    //TransactionDto
+    @Mappings({@Mapping( source = "date", target = "date", qualifiedByName = "dateToString"),
+                @Mapping(source = "transactionDetails", target = "transactionDetails")})
+    TransactionDto transactionToDto(Transaction transactionDto);
 
-    @Named("dtoToPom")
-    @Mapping(target = "title", source = "titlePiece")
-    PieceOfMusicDto pieceOfMusicToDto(PieceOfMusic pieceOfMusic);
+    
 
-    @Mappings({
-            @Mapping(source = "concertRoom.concertRoomName", target = "concertRoomName"),
-            @Mapping(source = "concertRoom.address", target = "concertRoomAddress"),
-            @Mapping(source = "date", target = "date", qualifiedByName = "dateToString"),
-            @Mapping(source = "repertoire", target = "repertoire", qualifiedByName = "pomListToDto")
-    })
-    ConcertDto concertToDto(Concert concert);
-
-    @Named("pomListToDto")
-    default List<PieceOfMusicDto> pomListToDto (List<PieceOfMusic> repertoire){
+    @Named("repertoireToDto")
+    default List<PieceOfMusicDto> repertoireToDto (List<PieceOfMusic> repertoire){
         List<PieceOfMusicDto> dtos = new LinkedList<>();
         for(PieceOfMusic pom : repertoire){
             dtos.add(pieceOfMusicToDto(pom));
         }
         return dtos;
     }
-     */
+
+    @Named("dateToUtcString")
+    default String dateToUtcString(Date date) { return DateUtils.toUtcString(date); }
+
+    @Mappings({
+            @Mapping(source = "date", target = "date", qualifiedByName = "dateToUtcString"),
+            @Mapping(source = "concertRoom.address", target = "concertRoomAddress"),
+            @Mapping(source = "concertRoom.concertRoomName", target = "concertRoomName"),
+            @Mapping(source = "concertPerformers.details", target = "concertPerformers"),
+            @Mapping(source = "repertoire", target = "repertoire", qualifiedByName = "repertoireToDto")
+          // ? approved
+    })
+    ConcertDto concertToDto(Concert c);
+
+
+    @Named("utcToDate")
+    default Date utcToDate(String utc) throws ParseException { return DateUtils.utcToDate(utc); }
+
+    @Mapping(source = "date", target = "date", qualifiedByName = "utcToDate")
+    Concert dtoToConcert(ConcertDto dto);
+
 }
