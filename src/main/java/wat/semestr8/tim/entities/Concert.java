@@ -43,10 +43,4 @@ public class Concert
             inverseJoinColumns = @JoinColumn(name = "idPiece")
     )
     private List<PieceOfMusic> repertoire = new LinkedList<>();
-
-    public void addPieceOfMusic(PieceOfMusic piece)
-    {
-        if(!repertoire.contains(piece)) repertoire.add(piece);
-    }
-
 }

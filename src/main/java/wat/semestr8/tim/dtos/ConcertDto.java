@@ -32,5 +32,4 @@ public class ConcertDto
     private String concertPerformers;
     @NotEmpty
     private List<PieceOfMusicDto> repertoire = new LinkedList<>();
-    public void addPieceOfMusic(PieceOfMusicDto p){ repertoire.add(p);}
 }
