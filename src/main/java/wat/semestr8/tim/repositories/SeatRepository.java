@@ -23,6 +23,15 @@ public interface SeatRepository extends CrudRepository<Seat,Integer>
 
     Integer countByPosition(int pos);
     Integer countByRow(int row);
+
+    @Query(value="Select new wat.semestr8.tim.dtos.SeatDto(se.row,se.position) from Seat se" +
+            " where idSeat in" +
+            " (select s.idSeat from Ticket t" +
+            " left join t.concert c" +
+            " left join t.seat s" +
+            " where c.idConcert = :concertId" +
+            ")")
+    List<SeatDto> getSeatsOccupiedOnConcert(int concertId);
     /*
     Select se.id_seat from "seat" se
     where id_seat not in

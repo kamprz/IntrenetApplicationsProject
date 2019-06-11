@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import wat.semestr8.tim.socket.service.SocketService;
-import wat.semestr8.tim.socket.service.model.Message2;
 import wat.semestr8.tim.socket.service.model.SocketMessage;
 
 @Component
@@ -37,12 +36,15 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String androidId = (String) headerAccessor.getSessionAttributes().get("id");
         String typeStr = (String) headerAccessor.getSessionAttributes().get("type");
+        Integer concertId = Integer.parseInt((String)headerAccessor.getSessionAttributes().get("concertId"));
         SocketMessage.MessageType type = SocketMessage.MessageType.valueOf(typeStr);
 
 
-        if( androidId != null && typeStr != null) {
-            socketService.disconnect(androidId,type);
-            messagingTemplate.convertAndSend(subscribeAddress+"/"+concertId, message);
+        if( androidId != null && typeStr != null && concertId != null) {
+            SocketMessage unlocked = socketService.disconnect(androidId, type, concertId);
+            if( unlocked != null){
+                messagingTemplate.convertAndSend(subscribeAddress+"/"+concertId, unlocked);
+            }
         }
     }
 }

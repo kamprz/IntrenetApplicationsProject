@@ -20,4 +20,6 @@ public class PurchaseDto
     private String email;
     @NotEmpty
     private List<TicketDto> tickets;
+    @NotEmpty
+    private String userId;
 }

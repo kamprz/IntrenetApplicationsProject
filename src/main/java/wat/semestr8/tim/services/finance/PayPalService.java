@@ -9,10 +9,12 @@ import wat.semestr8.tim.dtos.PurchaseDto;
 import wat.semestr8.tim.dtos.TicketDto;
 import wat.semestr8.tim.entities.Concert;
 import wat.semestr8.tim.entities.Purchase;
+import wat.semestr8.tim.entities.Seat;
 import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr8.tim.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr8.tim.services.dataservices.*;
 import wat.semestr8.tim.services.ticketsending.TicketSendingService;
+import wat.semestr8.tim.socket.service.SocketService;
 import wat.semestr8.tim.utils.PriceUtils;
 
 import javax.mail.MessagingException;
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PayPalService
@@ -35,9 +38,10 @@ public class PayPalService
     private PurchaseService purchaseService;
     private TicketSendingService ticketSendingService;
     private TransactionService transactionService;
+    private SocketService socketService;
 
     public PayPalService(ConcertService concertService, DiscountService discountService, SeatService seatService, TicketService ticketService,
-                         PurchaseService purchaseService, TicketSendingService ticketSendingService, TransactionService transactionService) {
+                         PurchaseService purchaseService, TicketSendingService ticketSendingService, TransactionService transactionService, SocketService socketService) {
         this.concertService = concertService;
         this.discountService = discountService;
         this.seatService = seatService;
@@ -45,6 +49,7 @@ public class PayPalService
         this.purchaseService = purchaseService;
         this.ticketSendingService = ticketSendingService;
         this.transactionService = transactionService;
+        this.socketService = socketService;
     }
 
     public String createPayment(PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
@@ -105,6 +110,7 @@ public class PayPalService
             purchaseService.setPurchasePaid(purchase);
             transactionService.addTransaction(purchase);
             ticketSendingService.sendTickets(purchase.getIdPurchase());
+            purchaseFinished(purchase);
             return purchase.getEmail();
         }
         return "Completing paypal payment unsuccesfull";
@@ -138,11 +144,24 @@ public class PayPalService
         purchase.setPaypalID(token);
         purchase.setEmail(purchaseDto.getEmail());
         purchase.setTimestamp(new Date());
+        purchase.setUserId = purchaseDto.getUserId();
         return purchase;
     }
 
     private String getToken(String redirectUrl)
     {
         return redirectUrl.substring(redirectUrl.indexOf("token=") + "token=".length());
+    }
+
+    private void purchaseFinished(Purchase purchase){
+        List<Seat> seats;
+        int idConcert;
+        String userId;
+
+        idConcert = purchase.getTickets().get(0).getConcert().getIdConcert();
+        userId = purchase.getUserId();
+        seats = purchase.getTickets().stream().map(ticket -> ticket.getSeat()).collect(Collectors.toList());
+
+        socketService.purchaseFinished(seats,idConcert,userId);
     }
 }

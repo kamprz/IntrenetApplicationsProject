@@ -47,7 +47,7 @@ public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleUnknownHostException(Exception ex)
     {
         RestApiError error = RestApiError.builder()
-                .message("Can't connect to paypal sandbox. Check your internet connection.")
+                .message("Can't getCurrentlyOccupied to paypal sandbox. Check your internet connection.")
                 .debugMessage(ex.toString())
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .build()

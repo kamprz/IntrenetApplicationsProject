@@ -7,7 +7,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import wat.semestr8.tim.socket.service.SocketService;
-import wat.semestr8.tim.socket.service.model.Message2;
 import wat.semestr8.tim.socket.service.model.SocketMessage;
 
 import javax.validation.Valid;
@@ -25,21 +24,19 @@ public class SocketController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    //musze dostac idkoncertu
-    //"10_9_t_123456789"
     @MessageMapping("/socket.sendMessage")
-    public SocketMessage send (@Valid @Payload SocketMessage message, SimpMessageHeaderAccessor headerAccessor) {
-        String s = socketService.seatOccupationChanged(message);
+    public SocketMessage receiveMessage(@Valid @Payload SocketMessage message, SimpMessageHeaderAccessor headerAccessor) {
+        SocketMessage s = socketService.seatOccupationChanged(message);
 
         messagingTemplate.convertAndSend(subscribeAddress,message);
         return message;
     }
 
-    @MessageMapping("/socket.addUser")
+    /*@MessageMapping("/socket.addUser")
     //@SendTo("/topic/public")
     public Message2 addUser(@Valid @Payload Message2 message, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("username", message.getSender());
         messagingTemplate.convertAndSend(subscribeAddress,message);
         return message;
-    }
+    }*/
 }

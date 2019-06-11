@@ -23,8 +23,8 @@ public class PurchaseService
         this.purchaseRepository = purchaseRepository;
     }
 
-    @Scheduled(cron = "* */1 * * * *")
-    public void scheduleTaskUsingCronExpression() {
+    @Scheduled(cron = "* */3 * * * *")
+    public void deletePurchasesWhichWerentPaid() {
         Calendar now = Calendar.getInstance();
         now.setTime(new Date());
 
