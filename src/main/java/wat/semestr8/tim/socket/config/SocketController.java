@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import wat.semestr8.tim.socket.service.SocketService;
-import wat.semestr8.tim.socket.service.model.SocketMessage;
+import wat.semestr8.tim.dtos.SocketMessage;
 
 import javax.validation.Valid;
 

@@ -144,7 +144,7 @@ public class PayPalService
         purchase.setPaypalID(token);
         purchase.setEmail(purchaseDto.getEmail());
         purchase.setTimestamp(new Date());
-        purchase.setUserId = purchaseDto.getUserId();
+        purchase.setUserId(purchaseDto.getUserId());
         return purchase;
     }
 

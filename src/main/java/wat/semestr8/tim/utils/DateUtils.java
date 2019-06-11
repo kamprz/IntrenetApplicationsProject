@@ -37,4 +37,8 @@ public class DateUtils
     public static Date utcToDate(String utc) throws ParseException {
         return concertDateIsoFormatter.parse(utc);
     }
+
+    public static long minutesBetweenDates(Date before, Date after){
+        return (after.getTime() - before.getTime()) / (60 * 1000);
+    }
 }

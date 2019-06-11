@@ -1,4 +1,4 @@
-package wat.semestr8.tim.socket.service.model;
+package wat.semestr8.tim.dtos;
 
 import lombok.*;
 import wat.semestr8.tim.dtos.SeatDto;

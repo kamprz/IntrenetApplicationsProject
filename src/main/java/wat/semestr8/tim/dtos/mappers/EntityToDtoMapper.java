@@ -8,7 +8,7 @@ import wat.semestr8.tim.dtos.*;
 import wat.semestr8.tim.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr8.tim.dtos.finance.TransactionDto;
 import wat.semestr8.tim.entities.*;
-import wat.semestr8.tim.others.ConcertDetails;
+import wat.semestr8.tim.model.ConcertDetails;
 import wat.semestr8.tim.utils.DateUtils;
 
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import wat.semestr8.tim.socket.service.SocketService;
-import wat.semestr8.tim.socket.service.model.SocketMessage;
+import wat.semestr8.tim.dtos.SocketMessage;
 
 @Component
 public class WebSocketEventListener {

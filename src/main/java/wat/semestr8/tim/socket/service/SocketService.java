@@ -1,11 +1,14 @@
 package wat.semestr8.tim.socket.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import wat.semestr8.tim.dtos.SeatDto;
 import wat.semestr8.tim.entities.Seat;
-import wat.semestr8.tim.socket.service.model.SeatOccupied;
-import wat.semestr8.tim.socket.service.model.SocketMessage;
+import wat.semestr8.tim.model.SeatOccupied;
+import wat.semestr8.tim.dtos.SocketMessage;
+import wat.semestr8.tim.utils.DateUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,11 +16,19 @@ import java.util.stream.Collectors;
 @Service
 public class SocketService {
 
-    private HashMap<Integer, HashSet<SeatOccupied>> rowColsByConcertId = new HashMap<>();
-    private HashMap<Integer, HashMap<String, Set<SeatOccupied>>> rowColsByConcertIdAndUserId = new HashMap<>();
+    private HashMap<Integer, HashSet<SeatOccupied>> seatsOccupiedByConcertId = new HashMap<>();
+    private HashMap<Integer, HashMap<String, Set<SeatOccupied>>> seatsOccupiedByConcertIdAndUserId = new HashMap<>();
     private HashMap<String, HashSet<Integer>> concertIdByUserId = new HashMap<>();
 
-   //gdzie wysylanie informacji z socketa: controller czy service -> raczej service. zrobic tak.
+    private final SimpMessageSendingOperations messagingTemplate;
+    @Value("${socket.subscribeAddress}")
+    private String subscribeAddress;
+
+    public SocketService(SimpMessageSendingOperations messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+
+    //gdzie wysylanie informacji z socketa: controller czy service -> raczej service. zrobic tak.
 
     public SocketMessage seatOccupationChanged(SocketMessage message){
         if(message.getType().equals(SocketMessage.MessageType.LOCKED)) {
@@ -36,7 +47,6 @@ public class SocketService {
     public SocketMessage disconnect(String androidId, SocketMessage.MessageType messageType, Integer concertId){
         if(messageType.equals(SocketMessage.MessageType.FORWARDED))
         {
-            //TODO delayed removal
             userDisconnectedToBuyTickets(androidId,concertId);
             return null;
         }
@@ -44,16 +54,15 @@ public class SocketService {
             SocketMessage unlocked = userDisconnectedForGood(androidId,concertId);
             return unlocked;
         }
-
     }
 
     public synchronized List<SeatDto> getCurrentlyOccupied(int concertId){
-        if(! rowColsByConcertId.containsKey(concertId))
+        if(! seatsOccupiedByConcertId.containsKey(concertId))
         {
             return new LinkedList<>();
         }
         else {
-            return rowColsByConcertId.get(concertId).stream()
+            return seatsOccupiedByConcertId.get(concertId).stream()
                     .map(s -> new SeatDto(s.getRow(),s.getCol()))
                     .collect(Collectors.toList());
         }
@@ -66,10 +75,11 @@ public class SocketService {
         initializeMapsForConcertIfEmpty(message.getConcertId(), message.getAndroidId());
         concertIdByUserId.get(message.getAndroidId()).add(message.getConcertId());
 
-        if(rowColsByConcertId.get(message.getConcertId()).add(seatOccupied)){
+        if(seatsOccupiedByConcertId.get(message.getConcertId()).add(seatOccupied)){
             //tzn ze sie dodalo
-            rowColsByConcertIdAndUserId.get(message.getConcertId()).putIfAbsent(message.getAndroidId(), new HashSet<>());
-            rowColsByConcertIdAndUserId.get(message.getConcertId()).get(message.getAndroidId()).add(seatOccupied);
+            seatsOccupiedByConcertIdAndUserId.get(message.getConcertId()).putIfAbsent(message.getAndroidId(), new HashSet<>());
+            seatsOccupiedByConcertIdAndUserId.get(message.getConcertId()).get(message.getAndroidId()).add(seatOccupied);
+            seatOccupied.setSocketDisconnectedTime(new Date());
             return true;
         }
         else return false;
@@ -80,23 +90,23 @@ public class SocketService {
         String userId = message.getAndroidId();
         for(SeatDto seat : message.getSeat()){
             SeatOccupied seatOccupied = new SeatOccupied(seat.getRow(),seat.getCol());
-            rowColsByConcertId.get(concertId).remove(seatOccupied);
-            rowColsByConcertIdAndUserId.get(concertId).get(userId).remove(seatOccupied);
+            seatsOccupiedByConcertId.get(concertId).remove(seatOccupied);
+            seatsOccupiedByConcertIdAndUserId.get(concertId).get(userId).remove(seatOccupied);
         }
-        if(rowColsByConcertIdAndUserId.get(concertId).get(userId).isEmpty()) rowColsByConcertIdAndUserId.get(concertId).remove(userId);
+        if(seatsOccupiedByConcertIdAndUserId.get(concertId).get(userId).isEmpty()) seatsOccupiedByConcertIdAndUserId.get(concertId).remove(userId);
         removeEmptyEntriesIfNeeded(concertId,userId);
     }
 
     public synchronized SocketMessage userDisconnectedForGood(String userId, Integer concertId){
-        Set<SeatOccupied> seatsOccupied = rowColsByConcertIdAndUserId.get(concertId).get(userId);
+        Set<SeatOccupied> seatsOccupied = seatsOccupiedByConcertIdAndUserId.get(concertId).get(userId);
         if( ! seatsOccupied.isEmpty() ) {
-            //cleanUp rowColsByConcertId
+            //cleanUp seatsOccupiedByConcertId
             for(SeatOccupied seatOccupied : seatsOccupied){
-                //if(rowColsByConcertId.get(concertId).removeIf())
-                rowColsByConcertId.get(concertId).remove(seatOccupied);
+                //if(seatsOccupiedByConcertId.get(concertId).removeIf())
+                seatsOccupiedByConcertId.get(concertId).remove(seatOccupied);
             }
-            //cleanUp rowColsByConcertIdAndUserId
-            rowColsByConcertIdAndUserId.get(concertId).remove(userId);
+            //cleanUp seatsOccupiedByConcertIdAndUserId
+            seatsOccupiedByConcertIdAndUserId.get(concertId).remove(userId);
             //cleanUp concertIdByUserId
             concertIdByUserId.get(userId).remove(concertId);
 
@@ -118,7 +128,7 @@ public class SocketService {
     }
 
     public synchronized void userDisconnectedToBuyTickets(String userId, Integer concertId){
-        Set<SeatOccupied> seatsOccupied = rowColsByConcertIdAndUserId.get(concertId).get(userId);
+        Set<SeatOccupied> seatsOccupied = seatsOccupiedByConcertIdAndUserId.get(concertId).get(userId);
         for(SeatOccupied seat : seatsOccupied){
             seat.setSocketDisconnectedTime(new Date());
         }
@@ -127,29 +137,42 @@ public class SocketService {
     public synchronized void purchaseFinished(List<Seat> seats, int idConcert, String userID){
         //delete those seats from maps
         for(Seat s : seats){
-            SeatOccupied seatOccupied = new SeatOccupied(s.getRow(),s.getCol());
-            rowColsByConcertId.get(idConcert).remove(seatOccupied);
-            rowColsByConcertIdAndUserId.get(idConcert).get(userID).remove(seatOccupied);
+            SeatOccupied seatOccupied = new SeatOccupied(s.getRow(),s.getPosition());
+            if(seatsOccupiedByConcertId.get(idConcert) != null) seatsOccupiedByConcertId.get(idConcert).remove(seatOccupied);
+            if(seatsOccupiedByConcertIdAndUserId.get(idConcert) != null
+                    && seatsOccupiedByConcertIdAndUserId.get(idConcert).get(userID) != null)
+                seatsOccupiedByConcertIdAndUserId.get(idConcert).get(userID).remove(seatOccupied);
         }
     }
 
-    @Scheduled(cron = "* */3 * * * *")
+    @Scheduled(cron = "* */6 * * * *")
     public synchronized void deleteOccupationsIfNotPaid() {
-
-
+        Date now = new Date();
+        seatsOccupiedByConcertId.forEach((concertId, seatsSet) -> {
+            List<SeatDto> seatsToUnlock = new LinkedList<>();
+            for(SeatOccupied seat : seatsSet){
+                if(DateUtils.minutesBetweenDates(seat.getSocketDisconnectedTime(), now) > 5){
+                    seatsToUnlock.add(new SeatDto(seat.getRow(), seat.getCol()));
+                }
+                SocketMessage message = new SocketMessage();
+                message.setConcertId(concertId);
+                message.setSeat(seatsToUnlock);
+                message.setType(SocketMessage.MessageType.UNLOCKED);
+                messagingTemplate.convertAndSend(subscribeAddress+"/"+concertId, message);
+            }
+        });
     }
 
     private void initializeMapsForConcertIfEmpty(Integer concertId, String userId){
-        rowColsByConcertId.putIfAbsent(concertId,new HashSet<>());
-        rowColsByConcertIdAndUserId.putIfAbsent(concertId, new HashMap<>());
-        rowColsByConcertIdAndUserId.get(concertId).putIfAbsent(userId,new HashSet<>());
-
+        seatsOccupiedByConcertId.putIfAbsent(concertId,new HashSet<>());
+        seatsOccupiedByConcertIdAndUserId.putIfAbsent(concertId, new HashMap<>());
+        seatsOccupiedByConcertIdAndUserId.get(concertId).putIfAbsent(userId,new HashSet<>());
     }
 
     private void removeEmptyEntriesIfNeeded(Integer concertId, String userId){
-        if(rowColsByConcertId.get(concertId).isEmpty()) rowColsByConcertId.remove(concertId);
-        if(rowColsByConcertIdAndUserId.get(concertId).get(userId).isEmpty()) rowColsByConcertIdAndUserId.get(concertId).remove(userId);
-        if(rowColsByConcertIdAndUserId.get(concertId).isEmpty()) rowColsByConcertIdAndUserId.remove(concertId);
+        if(seatsOccupiedByConcertId.get(concertId).isEmpty()) seatsOccupiedByConcertId.remove(concertId);
+        if(seatsOccupiedByConcertIdAndUserId.get(concertId).get(userId).isEmpty()) seatsOccupiedByConcertIdAndUserId.get(concertId).remove(userId);
+        if(seatsOccupiedByConcertIdAndUserId.get(concertId).isEmpty()) seatsOccupiedByConcertIdAndUserId.remove(concertId);
         if(concertIdByUserId.get(userId).isEmpty()) concertIdByUserId.remove(userId);
     }
 }

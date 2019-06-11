@@ -1,4 +1,4 @@
-package wat.semestr8.tim.others;
+package wat.semestr8.tim.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

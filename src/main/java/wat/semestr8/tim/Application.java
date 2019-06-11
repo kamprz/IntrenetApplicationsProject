@@ -8,7 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import wat.semestr8.tim.socket.service.model.SocketMessage;
+import wat.semestr8.tim.utils.DateUtils;
+
+import java.time.Duration;
+import java.util.Date;
 
 @EnableJpaRepositories
 @EnableAspectJAutoProxy
@@ -17,9 +20,7 @@ import wat.semestr8.tim.socket.service.model.SocketMessage;
 @SpringBootApplication
 public class Application {
 	public static void main(String[] args) {
-
-		//SpringApplication.run(Application.class, args);
-		SocketMessage.MessageType type = SocketMessage.MessageType("")
+		SpringApplication.run(Application.class, args);
 	}
 
 	@Bean

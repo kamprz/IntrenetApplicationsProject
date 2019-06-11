@@ -6,6 +6,7 @@ import wat.semestr8.tim.dtos.ConcertDto;
 import wat.semestr8.tim.dtos.PieceOfMusicDto;
 import wat.semestr8.tim.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr8.tim.entities.Concert;
+import wat.semestr8.tim.entities.ConcertRoom;
 import wat.semestr8.tim.entities.PieceOfMusic;
 import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr8.tim.repositories.ConcertRoomRepository;
@@ -34,7 +35,6 @@ public class ConcertMapper {
 
     public Concert dtoToConcert(ConcertDto dto) throws EntityNotFoundException {
         Concert concert = mapper.dtoToConcert(dto);
-
         concert.setConcertRoom(concertRoomRepository.findFirstByConcertRoomName(dto.getConcertRoomName()));
         concert.setConcertPerformers(performersRepository.findFirstByDetails(dto.getConcertPerformers()));
         if(concert.getConcertPerformers() == null) throw new EntityNotFoundException("There is no such performers entity in database.");

@@ -69,6 +69,7 @@ public class ServiceDemo {
     private final Calendar calendar = Calendar.getInstance();
     private final String ORKIESTRA_SYMFONICZNA = "Pełna orkiestra symfoniczna";
     private final String ORKIESTRA_SMYCZKOWA_Z_CHOREM_I_ORGANAMI = "Orkiestra smyczkowa, organy i chór";
+    private final String SALA_NAZWA = "Sala koncertowa Filharmonii Narodowej";
     private List<PieceOfMusicDto> repertoireSymph = new LinkedList<>();
     private List<PieceOfMusicDto> repertoireCarols = new LinkedList<>();
 
@@ -79,6 +80,7 @@ public class ServiceDemo {
         concertDto.setTicketCost(new BigDecimal(ticketPrice));
         concertDto.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
         concertDto.setDate(date);
+        concertDto.setConcertRoomName(SALA_NAZWA);
 
         concertDto.setConcertTitle(title);
         concertDto.setRepertoire(repertoire);
@@ -233,7 +235,7 @@ public class ServiceDemo {
     private ConcertRoom setConcertRoom()
     {
         ConcertRoom concertRoom = new ConcertRoom();
-        concertRoom.setConcertRoomName("Sala koncertowa Filharmonii Narodowej");
+        concertRoom.setConcertRoomName(SALA_NAZWA);
         concertRoom.setRentCosts(new BigDecimal("1000.00"));
         concertRoom.setAddress("Warszawa ul. Jasna 5");
         List<Seat> seats = new LinkedList<>();
@@ -305,11 +307,12 @@ public class ServiceDemo {
         concertDto.setConcertPerformers(ORKIESTRA_SYMFONICZNA);
         concertDto.setTicketCost(new BigDecimal("100"));
         concertDto.setAdditionalOrganisationCosts(new BigDecimal("1300.00"));
-        concertDto.setDate("2019-01-20T19:00:00.000 UTC");
+        concertDto.setDate("2019-06-20T19:00:00.000 UTC");
 
         concertDto.setConcertTitle("Koncert symfoniczny");
         concertDto.setRepertoire(repertoireSymph);
         concertDto.setApproved(true);
+        concertDto.setConcertRoomName(SALA_NAZWA);
         concertRepository.save(concertMapper.dtoToConcert(concertDto));
 
         ConcertDto concertDto2 = new ConcertDto();
@@ -317,10 +320,11 @@ public class ServiceDemo {
         concertDto2.setConcertPerformers(ORKIESTRA_SYMFONICZNA);
         concertDto2.setTicketCost(new BigDecimal("120"));
         concertDto2.setAdditionalOrganisationCosts(new BigDecimal("1000.00"));
-        concertDto2.setDate("2019-01-21T18:00:00.000 UTC");
+        concertDto2.setDate("2019-06-21T18:00:00.000 UTC");
         concertDto2.setApproved(false);
         concertDto2.setConcertTitle("Koncert symfoniczny");
         concertDto2.setRepertoire(repertoireSymph);
+        concertDto2.setConcertRoomName(SALA_NAZWA);
         concertRepository.save(concertMapper.dtoToConcert(concertDto2));
     }
 }

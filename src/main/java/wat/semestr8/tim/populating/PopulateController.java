@@ -1,4 +1,4 @@
-package wat.semestr8.tim.controllers;
+package wat.semestr8.tim.populating;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

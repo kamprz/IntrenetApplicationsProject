@@ -1,10 +1,9 @@
-package wat.semestr8.tim.socket.service.model;
+package wat.semestr8.tim.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor

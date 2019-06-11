@@ -15,7 +15,14 @@ import java.io.IOException;
 
 @RestController
 public class PayPalController {
+/*
+  sandbox kupiec:
+  kupiec@tim.wat
+  hasło
+  user: timwatb3@gmail.com
+    hasło: projekttim5
 
+    */
     private PayPalService payPalService;
     PayPalController(PayPalService payPalService){
         this.payPalService = payPalService;
