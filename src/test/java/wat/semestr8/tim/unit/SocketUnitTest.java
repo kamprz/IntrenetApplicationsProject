@@ -3,11 +3,15 @@ package wat.semestr8.tim.unit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import wat.semestr8.tim.dtos.SeatDto;
 import wat.semestr8.tim.dtos.SocketMessage;
 import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
 import wat.semestr8.tim.model.SeatOccupied;
+import wat.semestr8.tim.socket.SocketBroadcaster;
 import wat.semestr8.tim.socket.SocketService;
 
 import java.util.Arrays;
@@ -15,14 +19,17 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SocketUnitTest {
+    @Mock
+    SocketBroadcaster broadcaster;
 
     private SocketService service;
     private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
     @Before
     public void init(){
-        service = new SocketService(null);
+        service = new SocketService(broadcaster);
     }
 
     @Test
@@ -48,28 +55,6 @@ public class SocketUnitTest {
 
         assertTrue(service.getSeatsOccupiedByConcertIdAndUserId(concertId,userId).contains(mapper.seatDtoToSeatOccupied(seat1)));
         assertFalse(service.getSeatsOccupiedByConcertIdAndUserId(concertId,userId).contains(mapper.seatDtoToSeatOccupied(seat2)));
-    }
-
-    @Test
-    public void secondMessageForSamePlaceWillReturnNull()
-    {
-        //given
-        SocketMessage message = new SocketMessage();
-        String userId = "123456789";
-        Integer concertId = 1;
-        message.setAndroidId(userId);
-        message.setConcertId(concertId);
-        message.setType(SocketMessage.MessageType.LOCKED);
-        message.setSeat(Arrays.asList(
-                new SeatDto(1,1),
-                new SeatDto(1,2),
-                new SeatDto(1,3))
-        );
-        //when
-        service.seatOccupationChanged(message);
-        SocketMessage mess = service.seatOccupationChanged(message);
-        //then
-        assertNull(null,mess);
     }
 
     @Test(expected = NullPointerException.class)
@@ -121,4 +106,3 @@ public class SocketUnitTest {
         assertTrue(service.getSeatsOccupiedByConcertIdAndUserId(concertId,userId).contains(mapper.seatDtoToSeatOccupied(seat)));;
     }
 }
-

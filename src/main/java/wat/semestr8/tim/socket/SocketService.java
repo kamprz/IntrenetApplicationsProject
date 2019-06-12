@@ -1,7 +1,5 @@
 package wat.semestr8.tim.socket;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import wat.semestr8.tim.dtos.SeatDto;
@@ -20,39 +18,35 @@ public class SocketService {
     private HashMap<Integer, HashMap<String, Set<SeatOccupied>>> seatsOccupiedByConcertIdAndUserId = new HashMap<>();
     private HashMap<String, HashSet<Integer>> concertIdByUserId = new HashMap<>();
 
-    private final SimpMessageSendingOperations messagingTemplate;
-    @Value("${socket.subscribeAddress}")
-    private String subscribeAddress;
+    private SocketBroadcaster socketBroadcastingStation;
 
-    public SocketService(SimpMessageSendingOperations messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    public SocketService(SocketBroadcaster socketBroadcastingStation) {
+        this.socketBroadcastingStation = socketBroadcastingStation;
     }
 
     //gdzie wysylanie informacji z socketa: controller czy service -> raczej service. zrobic tak.
 
-    public SocketMessage seatOccupationChanged(SocketMessage message){
+    public void seatOccupationChanged(SocketMessage message){
         if(message.getType().equals(SocketMessage.MessageType.LOCKED)) {
             if(lockPlace(message))
             {
-                return message;
+                socketBroadcastingStation.broadcast(message);
             }
-            else return null;
         }
         else {
             unlockPlace(message);
-            return message;
+            socketBroadcastingStation.broadcast(message);
         }
     }
 
-    public SocketMessage disconnect(String androidId, SocketMessage.MessageType messageType, Integer concertId){
+    public void disconnect(String androidId, SocketMessage.MessageType messageType, Integer concertId){
         if(messageType.equals(SocketMessage.MessageType.FORWARDED))
         {
             userDisconnectedToBuyTickets(androidId,concertId);
-            return null;
         }
         else{
             SocketMessage unlocked = userDisconnectedForGood(androidId,concertId);
-            return unlocked;
+            socketBroadcastingStation.broadcast(unlocked);
         }
     }
 
@@ -157,7 +151,7 @@ public class SocketService {
                 message.setConcertId(concertId);
                 message.setSeat(seatsToUnlock);
                 message.setType(SocketMessage.MessageType.UNLOCKED);
-                messagingTemplate.convertAndSend(subscribeAddress+"/"+concertId, message);
+                socketBroadcastingStation.broadcast(message);
             }
         });
     }
@@ -177,9 +171,6 @@ public class SocketService {
             if(concertIdByUserId.get(userId).isEmpty()) concertIdByUserId.remove(userId);
         }
         if(seatsOccupiedByConcertIdAndUserId.get(concertId).isEmpty()) seatsOccupiedByConcertIdAndUserId.remove(concertId);
-        System.out.println("Seats by concertId :" + seatsOccupiedByConcertId);
-        System.out.println("Seats by concert id and user id: " + seatsOccupiedByConcertIdAndUserId);
-        System.out.println("concert by uId: " + concertIdByUserId);
     }
 
     public HashSet<SeatOccupied> getSeatsOccupiedByConcertId(Integer concertId) {

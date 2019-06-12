@@ -53,8 +53,6 @@ public class ConcertMapper {
         concert.setRepertoire(repertoire);
         return concert;
     }
-
-
 }
 
 

@@ -1,5 +1,6 @@
 package wat.semestr8.tim.socket;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -8,17 +9,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class SocketConfig implements WebSocketMessageBrokerConfigurer {
+    @Value("${socket.subscribeAddress}")
+    private String subscribeAddress;
+
     @Override
-    //WebSocket server
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS(); //For not Sock wb
+        registry.addEndpoint("/ws").withSockJS();
     }
 
     @Override
-    //
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app"); //handel messages
-        registry.enableSimpleBroker("/concert/seats"); //Sends messages
+        registry.enableSimpleBroker(subscribeAddress); //Sends messages
     }
 }

@@ -1,10 +1,8 @@
 package wat.semestr8.tim.socket;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import wat.semestr8.tim.dtos.SocketMessage;
 
@@ -14,20 +12,15 @@ import javax.validation.Valid;
 public class SocketController {
 
     private final SocketService socketService;
-    private final SimpMessageSendingOperations messagingTemplate;
-    @Value("${socket.subscribeAddress}")
-    private String subscribeAddress;
 
-    public SocketController(SocketService socketService, SimpMessageSendingOperations messagingTemplate) {
+    public SocketController(SocketService socketService) {
         this.socketService = socketService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/socket.sendMessage")
-    public SocketMessage receiveMessage(@Valid @Payload SocketMessage message, SimpMessageHeaderAccessor headerAccessor) {
-        SocketMessage broadcast = socketService.seatOccupationChanged(message);
-        if(broadcast != null) messagingTemplate.convertAndSend(subscribeAddress,broadcast);
-        return message;
+    public void receiveMessage(@Valid @Payload SocketMessage message) {
+        socketService.seatOccupationChanged(message);
+
     }
 
     /*@MessageMapping("/socket.addUser")
