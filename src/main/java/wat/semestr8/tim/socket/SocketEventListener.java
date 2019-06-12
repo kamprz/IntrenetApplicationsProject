@@ -1,4 +1,4 @@
-package wat.semestr8.tim.socket.config;
+package wat.semestr8.tim.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,19 +9,18 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import wat.semestr8.tim.socket.service.SocketService;
 import wat.semestr8.tim.dtos.SocketMessage;
 
 @Component
-public class WebSocketEventListener {
+public class SocketEventListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(SocketEventListener.class);
     @Value("${socket.subscribeAddress}")
     private String subscribeAddress;
     private final SimpMessageSendingOperations messagingTemplate;
     private final SocketService socketService;
 
-    public WebSocketEventListener(SimpMessageSendingOperations messagingTemplate, SocketService socketService) {
+    public SocketEventListener(SimpMessageSendingOperations messagingTemplate, SocketService socketService) {
         this.messagingTemplate = messagingTemplate;
         this.socketService = socketService;
     }

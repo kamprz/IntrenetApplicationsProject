@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import wat.semestr8.tim.dtos.SeatDto;
 import wat.semestr8.tim.entities.Seat;
 import wat.semestr8.tim.repositories.SeatRepository;
-import wat.semestr8.tim.socket.service.SocketService;
+import wat.semestr8.tim.socket.SocketService;
 
 import java.util.List;
 

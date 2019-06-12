@@ -1,5 +1,6 @@
 package wat.semestr8.tim.populating;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wat.semestr8.tim.populating.ServiceDemo;
@@ -13,8 +14,9 @@ public class PopulateController  {
     }
 
     @RequestMapping("/populate")
-    public void populate()
+    public ResponseEntity populate()
     {
         serviceDemo.populate();
+        return ResponseEntity.ok("Finished");
     }
 }

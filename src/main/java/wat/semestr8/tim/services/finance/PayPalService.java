@@ -14,7 +14,7 @@ import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr8.tim.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr8.tim.services.dataservices.*;
 import wat.semestr8.tim.services.ticketsending.TicketSendingService;
-import wat.semestr8.tim.socket.service.SocketService;
+import wat.semestr8.tim.socket.SocketService;
 import wat.semestr8.tim.utils.PriceUtils;
 
 import javax.mail.MessagingException;
@@ -142,8 +142,8 @@ public class PayPalService
     {
         Purchase purchase = new Purchase();
         purchase.setPaypalID(token);
-        purchase.setEmail(purchaseDto.getEmail());
         purchase.setTimestamp(new Date());
+        purchase.setEmail(purchaseDto.getEmail());
         purchase.setUserId(purchaseDto.getUserId());
         return purchase;
     }

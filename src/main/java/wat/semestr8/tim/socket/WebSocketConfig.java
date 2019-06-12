@@ -1,4 +1,4 @@
-package wat.semestr8.tim.socket.config;
+package wat.semestr8.tim.socket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

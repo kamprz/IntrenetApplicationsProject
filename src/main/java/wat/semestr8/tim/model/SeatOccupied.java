@@ -1,43 +1,34 @@
 package wat.semestr8.tim.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Objects;
 
+@NoArgsConstructor
 @Data
-@AllArgsConstructor
 public class SeatOccupied {
     private int row;
     private int col;
-    private Date socketDisconnectedTime;
+    private Date unlockingCountdownStarts;
 
     public SeatOccupied(int row, int col) {
         this.row = row;
         this.col = col;
     }
 
-    public Date getSocketDisconnectedTime() {
-        return socketDisconnectedTime;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SeatOccupied that = (SeatOccupied) o;
+        return row == that.row &&
+                col == that.col;
     }
 
-    public void setSocketDisconnectedTime(Date socketDisconnectedTime) {
-        this.socketDisconnectedTime = socketDisconnectedTime;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
     }
 }

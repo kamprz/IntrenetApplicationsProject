@@ -1,4 +1,4 @@
-package wat.semestr8.tim.socket.config;
+package wat.semestr8.tim.socket;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -6,7 +6,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-import wat.semestr8.tim.socket.service.SocketService;
 import wat.semestr8.tim.dtos.SocketMessage;
 
 import javax.validation.Valid;
@@ -26,9 +25,8 @@ public class SocketController {
 
     @MessageMapping("/socket.sendMessage")
     public SocketMessage receiveMessage(@Valid @Payload SocketMessage message, SimpMessageHeaderAccessor headerAccessor) {
-        SocketMessage s = socketService.seatOccupationChanged(message);
-
-        messagingTemplate.convertAndSend(subscribeAddress,message);
+        SocketMessage broadcast = socketService.seatOccupationChanged(message);
+        if(broadcast != null) messagingTemplate.convertAndSend(subscribeAddress,broadcast);
         return message;
     }
 

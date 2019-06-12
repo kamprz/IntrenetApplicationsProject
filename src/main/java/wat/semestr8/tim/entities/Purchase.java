@@ -24,32 +24,4 @@ public class Purchase
     @OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
     private List<Ticket> tickets;
-
-    public int getIdPurchase() {
-        return idPurchase;
-    }
-
-    public boolean isPaid() {
-        return isPaid;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPaypalID() {
-        return paypalID;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
 }

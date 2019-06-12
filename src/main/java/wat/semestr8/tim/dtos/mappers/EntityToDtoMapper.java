@@ -9,6 +9,7 @@ import wat.semestr8.tim.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr8.tim.dtos.finance.TransactionDto;
 import wat.semestr8.tim.entities.*;
 import wat.semestr8.tim.model.ConcertDetails;
+import wat.semestr8.tim.model.SeatOccupied;
 import wat.semestr8.tim.utils.DateUtils;
 
 
@@ -102,5 +103,7 @@ private String concertTitle;
     })
 
     Concert dtoToConcert(ConcertDto dto);
+
+    SeatOccupied seatDtoToSeatOccupied(SeatDto seat);
 
 }

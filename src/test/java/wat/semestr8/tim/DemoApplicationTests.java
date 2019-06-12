@@ -1,4 +1,4 @@
-package wat.semestr7.tim;
+package wat.semestr8.tim;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +11,7 @@ public class DemoApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
 	}
 
 }

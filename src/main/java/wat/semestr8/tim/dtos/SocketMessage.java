@@ -21,36 +21,4 @@ public class SocketMessage {
         LOCKED,
         UNLOCKED
     }
-
-    public int getConcertId() {
-        return concertId;
-    }
-
-    public void setConcertId(int concertId) {
-        this.concertId = concertId;
-    }
-
-    public String getAndroidId() {
-        return androidId;
-    }
-
-    public void setAndroidId(String androidId) {
-        this.androidId = androidId;
-    }
-
-    public List<SeatDto> getSeat() {
-        return seat;
-    }
-
-    public void setSeat(List<SeatDto> seat) {
-        this.seat = seat;
-    }
-
-    public MessageType getType() {
-        return type;
-    }
-
-    public void setType(MessageType type) {
-        this.type = type;
-    }
 }
