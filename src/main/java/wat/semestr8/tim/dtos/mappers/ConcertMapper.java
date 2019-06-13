@@ -37,6 +37,7 @@ public class ConcertMapper {
         Concert concert = mapper.dtoToConcert(dto);
         concert.setConcertRoom(concertRoomRepository.findFirstByConcertRoomName(dto.getConcertRoomName()));
         concert.setConcertPerformers(performersRepository.findFirstByDetails(dto.getConcertPerformers()));
+        System.out.println(concert.getConcertPerformers());
         if(concert.getConcertPerformers() == null) throw new EntityNotFoundException("There is no such performers entity in database.");
         if(concert.getConcertRoom() == null) throw new EntityNotFoundException("There is no such concert room entity in database.");
 

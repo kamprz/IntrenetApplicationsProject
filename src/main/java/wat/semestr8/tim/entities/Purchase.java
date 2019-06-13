@@ -22,6 +22,6 @@ public class Purchase
     private String userId;
 
     @OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.REMOVE)
     private List<Ticket> tickets;
 }
