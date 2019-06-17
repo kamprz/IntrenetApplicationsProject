@@ -74,6 +74,7 @@ public class SocketService {
             seatsOccupiedByConcertIdAndUserId.get(message.getConcertId()).putIfAbsent(message.getAndroidId(), new HashSet<>());
             seatsOccupiedByConcertIdAndUserId.get(message.getConcertId()).get(message.getAndroidId()).add(seatOccupied);
             seatOccupied.setUnlockingCountdownStarts(new Date());
+            System.out.println("locked");
             return true;
         }
         else return false;
@@ -86,6 +87,7 @@ public class SocketService {
             SeatOccupied seatOccupied = new SeatOccupied(seat.getRow(),seat.getCol());
             seatsOccupiedByConcertId.get(concertId).remove(seatOccupied);
             seatsOccupiedByConcertIdAndUserId.get(concertId).get(userId).remove(seatOccupied);
+            System.out.println("unlocked");
         }
         removeEmptyEntriesIfNeeded(concertId,userId);
     }
