@@ -16,6 +16,7 @@ public class SocketBroadcaster {
     }
 
     public void broadcast(SocketMessage message){
+        System.out.println("Wysylam cos");
         messagingTemplate.convertAndSend(subscribeAddress+"/"+message.getConcertId(), message);
     }
 }

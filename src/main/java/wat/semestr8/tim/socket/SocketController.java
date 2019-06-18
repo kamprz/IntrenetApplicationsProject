@@ -23,11 +23,10 @@ public class SocketController {
 
     }
 
-    /*@MessageMapping("/socket.addUser")
-    //@SendTo("/topic/public")
-    public Message2 addUser(@Valid @Payload Message2 message, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", message.getSender());
-        messagingTemplate.convertAndSend(subscribeAddress,message);
-        return message;
-    }*/
+    @MessageMapping("/socket.addUser")
+    public void addUser(SimpMessageHeaderAccessor headerAccessor) {
+        headerAccessor.getSessionAttributes().put("username", "aaaa");
+        //messagingTemplate.convertAndSend(subscribeAddress,message);
+        //return message;
+    }
 }

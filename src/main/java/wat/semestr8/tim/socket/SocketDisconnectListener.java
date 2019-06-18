@@ -1,10 +1,6 @@
 package wat.semestr8.tim.socket;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -19,8 +15,10 @@ public class SocketDisconnectListener {
         this.socketService = socketService;
     }
 
+    //Napisać obsługę wiadomości disconnect i forward
     @EventListener
     public void handleWebSocketDisconnect (SessionDisconnectEvent event) {
+        /*
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String androidId = (String) headerAccessor.getSessionAttributes().get("id");
         String typeStr = (String) headerAccessor.getSessionAttributes().get("type");
@@ -30,5 +28,6 @@ public class SocketDisconnectListener {
         if( androidId != null && typeStr != null && concertId != null) {
             socketService.disconnect(androidId, type, concertId);
         }
+         */
     }
 }

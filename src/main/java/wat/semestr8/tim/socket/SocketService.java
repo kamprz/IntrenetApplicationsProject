@@ -33,10 +33,12 @@ public class SocketService {
                 socketBroadcastingStation.broadcast(message);
             }
         }
-        else {
+        else if (message.getType().equals(SocketMessage.MessageType.UNLOCKED)) {
             unlockPlace(message);
             socketBroadcastingStation.broadcast(message);
         }
+        else
+            disconnect(message.getAndroidId(), message.getType(), message.getConcertId());
     }
 
     public void disconnect(String androidId, SocketMessage.MessageType messageType, Integer concertId){
