@@ -36,5 +36,5 @@ public class Application {
 	}
 }
 
-//odpalanie pgadmin4:
+//odpalanie pgadmin4 na linuchu:
 // ~/pgadmin4/pgadmin4

@@ -6,9 +6,10 @@ import wat.semestr8.tim.dtos.ConcertDetailsDto;
 import wat.semestr8.tim.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr8.tim.dtos.finance.MonthSummaryDto;
 import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
-import wat.semestr8.tim.exceptions.customexceptions.WrongRequestParameterException;
 import wat.semestr8.tim.services.finance.FinanceService;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -21,9 +22,8 @@ public class FinanceController
     }
 
     @GetMapping(value = "/admin/finance/month-summary")
-    public ResponseEntity<MonthSummaryDto> getMonthSummary(@RequestParam int month, @RequestParam int year) throws WrongRequestParameterException {
-        if(month<1 || month > 12) throw new WrongRequestParameterException("Wrong month value. Must be integer between 1 and 12");
-        if(year < 2000 & year > 3000) throw new WrongRequestParameterException("Wrong year value. Must be integer between 2000 and 3000");
+    public ResponseEntity<MonthSummaryDto> getMonthSummary(@RequestParam @Min(1) @Max(12) int month,
+                                                           @RequestParam @Min(2000) @Max(3000) int year){
         return ResponseEntity.ok().body(finanseService.getMonthSummary(month,year));
     }
 

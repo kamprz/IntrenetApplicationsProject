@@ -1,6 +1,8 @@
 package wat.semestr8.tim.dtos;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import wat.semestr8.tim.dtos.validators.date.ReadableDateConstraint;
 
@@ -10,9 +12,8 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
-
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class ConcertDto
 {
     @NotNull

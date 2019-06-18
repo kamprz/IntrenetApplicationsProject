@@ -11,6 +11,7 @@ import wat.semestr8.tim.services.finance.PayPalService;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 
 @RestController
@@ -34,15 +35,10 @@ public class PayPalController {
     }
 
     @PostMapping(value = "/paypal/payment/complete")
-    public ResponseEntity<String> completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, WrongEntityInRequestBodyException, PaymentTimeoutException {
-        checkIfCompletingPaymentRequestBodyIsCorrect(request);
-        return ResponseEntity.ok().body(payPalService.completePayment(request));
+    public ResponseEntity<String> completePayment(@NotEmpty @RequestParam String paymentId,
+                                                  @NotEmpty @RequestParam String token,
+                                                  @NotEmpty @RequestParam String PayerID)
+            throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, WrongEntityInRequestBodyException, PaymentTimeoutException {
+        return ResponseEntity.ok().body(payPalService.completePayment(paymentId,token,PayerID));
     }
-
-    private void checkIfCompletingPaymentRequestBodyIsCorrect(HttpServletRequest request) throws WrongEntityInRequestBodyException {
-        if(request.getParameter("paymentId")==null) throw new WrongEntityInRequestBodyException("PaymentId not present int request");
-        if(request.getParameter("token")==null) throw new WrongEntityInRequestBodyException("Token not present int request");
-        if(request.getParameter("PayerID")==null) throw new WrongEntityInRequestBodyException("PayerID not present int request");
-    }
-
 }

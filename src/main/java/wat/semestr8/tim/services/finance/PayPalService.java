@@ -95,18 +95,18 @@ public class PayPalService
         return null;
     }
 
-    public String completePayment(HttpServletRequest request) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, PaymentTimeoutException {
+    public String completePayment(String paymentId, String PayerID, String token) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, PaymentTimeoutException {
         Payment payment = new Payment();
-        payment.setId(request.getParameter("paymentId"));
+        payment.setId(paymentId);
 
         PaymentExecution paymentExecution = new PaymentExecution();
-        paymentExecution.setPayerId(request.getParameter("PayerID"));
+        paymentExecution.setPayerId(PayerID);
 
         APIContext context = new APIContext(clientId, clientSecret, "sandbox");
         Payment createdPayment = payment.execute(context, paymentExecution);
         if(createdPayment!=null)
         {
-            Purchase purchase = purchaseService.getPurchaseByToken(request.getParameter("token"));
+            Purchase purchase = purchaseService.getPurchaseByToken(token);
             purchaseService.setPurchasePaid(purchase);
             transactionService.addTransaction(purchase);
             ticketSendingService.sendTickets(purchase.getIdPurchase());

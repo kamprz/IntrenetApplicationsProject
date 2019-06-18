@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReadableDateConstraint {
-    String message() default "Wrong date format. Used one is: dd/MM/yyyy HH:mm";
+    String message() default "Wrong date format. Used one is UTC ";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

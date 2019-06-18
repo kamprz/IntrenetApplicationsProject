@@ -12,7 +12,7 @@ import wat.semestr8.tim.exceptions.customexceptions.WrongEntityInRequestBodyExce
 
 import java.text.ParseException;
 
-@ControllerAdvice(basePackages = {"wat.semestr7.ai.controllers","wat.semestr7.ai.security"})
+@ControllerAdvice(basePackages = "wat.semestr8.tim")
 public class RestApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> buildResponseEntity(RestApiError apiError) {
