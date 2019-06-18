@@ -67,4 +67,8 @@ public class PurchaseService
     {
         return purchaseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
     }
+
+    public List<Purchase> getAllByUserId(String id){
+        return purchaseRepository.findAllByUserId(id);
+    }
 }

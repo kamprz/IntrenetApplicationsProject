@@ -21,4 +21,5 @@ public interface TicketRepository extends CrudRepository<Ticket,Integer>
             " where c.idConcert = :concertId" +
             " and p.isPaid = true")
     List<Ticket> findAllPaidByConcert(@Param("concertId") int concertId);
+
 }

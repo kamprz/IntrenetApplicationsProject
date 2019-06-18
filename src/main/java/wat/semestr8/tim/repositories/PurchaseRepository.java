@@ -12,4 +12,6 @@ public interface PurchaseRepository extends CrudRepository<Purchase,Integer>
 
     @Query(value = "select p from Purchase p where isPaid=false")
     List<Purchase> findAllWhereIsNotPaid();
+
+    List<Purchase> findAllByUserId(String userId);
 }

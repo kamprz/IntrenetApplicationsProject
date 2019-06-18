@@ -1,7 +1,11 @@
 package wat.semestr8.tim.services.dataservices;
 
+import lombok.AllArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import wat.semestr8.tim.dtos.AndroidTicketDto;
 import wat.semestr8.tim.dtos.TicketDto;
+import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
 import wat.semestr8.tim.entities.Concert;
 import wat.semestr8.tim.entities.Purchase;
 import wat.semestr8.tim.entities.Seat;
@@ -10,6 +14,7 @@ import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr8.tim.repositories.TicketRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketService
@@ -17,11 +22,14 @@ public class TicketService
     private TicketRepository ticketRepository;
     private SeatService seatService;
     private DiscountService discountService;
+    private PurchaseService purchaseService;
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
-    public TicketService(TicketRepository ticketRepository, SeatService seatService, DiscountService discountService) {
+    public TicketService(TicketRepository ticketRepository, SeatService seatService, DiscountService discountService, PurchaseService purchaseService) {
         this.ticketRepository = ticketRepository;
         this.seatService = seatService;
         this.discountService = discountService;
+        this.purchaseService = purchaseService;
     }
 
     public void buyTicket(TicketDto ticketDto, Concert concert, Purchase purchase) throws EntityNotFoundException {
@@ -47,5 +55,14 @@ public class TicketService
     public List<Ticket> getAllTicketsByConcert(Concert concert)
     {
         return ticketRepository.findAllPaidByConcert(concert.getIdConcert());
+    }
+
+    public List<AndroidTicketDto> getAllTicketsByUserId(String id) {
+        return purchaseService.getAllByUserId(id)
+                .stream()
+                .map(Purchase::getTickets)
+                .flatMap(tickets -> tickets.stream())
+                .map(t -> mapper.ticketForAndroid(t))
+                .collect(Collectors.toList());
     }
 }
