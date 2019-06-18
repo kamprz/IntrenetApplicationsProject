@@ -12,6 +12,7 @@ import wat.semestr8.tim.exceptions.customexceptions.WrongEntityInRequestBodyExce
 import wat.semestr8.tim.services.finance.PayPalService;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.List;
@@ -35,7 +36,8 @@ public class PayPalController {
     }
 
     @PostMapping(value = "/paypal/payment/make", produces = "application/json")
-    public ResponseEntity<RedirectURL> makePayment(@RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
+    public ResponseEntity makePayment(@Valid @RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
+        if(purchaseDto.getEmail() == null && purchaseDto.getUserId() == null) return ResponseEntity.unprocessableEntity().body("Purchase must have set email or userId field.");
         return ResponseEntity.ok().body(payPalService.createPayment(purchaseDto));
     }
 

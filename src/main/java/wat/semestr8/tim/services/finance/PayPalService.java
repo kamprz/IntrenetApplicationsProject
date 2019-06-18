@@ -122,11 +122,10 @@ public class PayPalService
             purchaseService.setPurchasePaid(purchase);
             transactionService.addTransaction(purchase);
             try{
-                ticketSendingService.sendTickets(purchase.getIdPurchase());
+                if(purchase.getEmail() != null) ticketSendingService.sendTickets(purchase.getIdPurchase());
             }catch(IOException e){ throw new PayPalRESTException("Not valid attempt to pay for ticket"); }
             purchaseFinished(purchase);
             List<Ticket> allTicketsByPurchase = ticketService.getAllTicketsByPurchase(purchase);
-            System.out.println("ALL TICKETS: " + allTicketsByPurchase);
             return allTicketsByPurchase.stream().map(mapper::ticketForAndroid).collect(Collectors.toList());
         }
         throw new PayPalRESTException("Completing paypal payment unsuccesfull");
