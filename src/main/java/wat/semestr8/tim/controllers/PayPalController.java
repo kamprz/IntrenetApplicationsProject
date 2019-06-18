@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wat.semestr8.tim.dtos.AndroidTicketDto;
 import wat.semestr8.tim.dtos.PurchaseDto;
+import wat.semestr8.tim.dtos.RedirectURL;
 import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr8.tim.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr8.tim.exceptions.customexceptions.WrongEntityInRequestBodyException;
@@ -34,8 +35,8 @@ public class PayPalController {
     }
 
     @PostMapping(value = "/paypal/payment/make", produces = "application/json")
-    public ResponseEntity<String> makePayment(@RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
-        return ResponseEntity.ok().body("{\"url\" : \""+payPalService.createPayment(purchaseDto)+"\"}");
+    public ResponseEntity<RedirectURL> makePayment(@RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
+        return ResponseEntity.ok().body(payPalService.createPayment(purchaseDto));
     }
 
     @PostMapping(value = "/paypal/payment/complete", produces = "application/json")

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import wat.semestr8.tim.dtos.AndroidTicketDto;
 import wat.semestr8.tim.dtos.PurchaseDto;
+import wat.semestr8.tim.dtos.RedirectURL;
 import wat.semestr8.tim.dtos.TicketDto;
 import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
 import wat.semestr8.tim.entities.Concert;
@@ -63,7 +64,7 @@ public class PayPalService
         this.socketService = socketService;
     }
 
-    public String createPayment(PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
+    public RedirectURL createPayment(PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
         String sum = getAmountToPay(purchaseDto);
         Amount amount = new Amount();
         amount.setCurrency("PLN");
@@ -101,7 +102,7 @@ public class PayPalService
             String token = getToken(redirectUrl);
             Purchase purchase = createPurchase(purchaseDto, token);
             createTickets(purchaseDto,purchase);
-            return redirectUrl;
+            return new RedirectURL(redirectUrl);
         }
         return null;
     }

@@ -22,7 +22,9 @@ public class SeatService
     public List<SeatDto> getFreeSeatsOnConcert(int idConcert)
     {
         List<SeatDto> freeSeatsOnConcert = seatRepository.getAllFreeSeatsOnConcert(idConcert);
+        System.out.println("SAJDLAASLDKAA");
         for(SeatDto seat: socketService.getCurrentlyOccupied(idConcert)){
+            System.out.println("Zajęte przez socket: " + seat);
             freeSeatsOnConcert.remove(seat);
         }
         return freeSeatsOnConcert;
