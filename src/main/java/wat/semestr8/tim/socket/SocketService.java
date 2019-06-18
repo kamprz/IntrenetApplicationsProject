@@ -1,8 +1,10 @@
 package wat.semestr8.tim.socket;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import wat.semestr8.tim.dtos.SeatDto;
+import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
 import wat.semestr8.tim.entities.Seat;
 import wat.semestr8.tim.model.SeatOccupied;
 import wat.semestr8.tim.dtos.SocketMessage;
@@ -19,6 +21,7 @@ public class SocketService {
     private HashMap<String, HashSet<Integer>> concertIdByUserId = new HashMap<>();
 
     private SocketBroadcaster socketBroadcastingStation;
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
     public SocketService(SocketBroadcaster socketBroadcastingStation) {
         this.socketBroadcastingStation = socketBroadcastingStation;
@@ -59,14 +62,14 @@ public class SocketService {
         }
         else {
             return seatsOccupiedByConcertId.get(concertId).stream()
-                    .map(s -> new SeatDto(s.getRow(),s.getCol()))
+                    .map(s -> mapper.occupiedToDto(s))
                     .collect(Collectors.toList());
         }
     }
 
     private synchronized boolean lockPlace(SocketMessage message){
         SeatDto seat = message.getSeat().get(0);
-        SeatOccupied seatOccupied = new SeatOccupied(seat.getRow(),seat.getCol());
+        SeatOccupied seatOccupied = mapper.seatDtoToSeatOccupied(seat);
 
         initializeMapsForConcertIfEmpty(message.getConcertId(), message.getAndroidId());
         concertIdByUserId.get(message.getAndroidId()).add(message.getConcertId());
@@ -150,12 +153,12 @@ public class SocketService {
             for(SeatOccupied seat : seatsSet){
                 if(DateUtils.minutesBetweenDates(seat.getUnlockingCountdownStarts(), now) > 5){
                     seatsToUnlock.add(new SeatDto(seat.getRow(), seat.getCol()));
-                }
                 SocketMessage message = new SocketMessage();
                 message.setConcertId(concertId);
                 message.setSeat(seatsToUnlock);
                 message.setType(SocketMessage.MessageType.UNLOCKED);
                 socketBroadcastingStation.broadcast(message);
+                }
             }
         });
     }

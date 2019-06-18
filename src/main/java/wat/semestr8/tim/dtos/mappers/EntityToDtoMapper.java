@@ -58,11 +58,6 @@ public interface EntityToDtoMapper {
            // @Mapping(source = "repertoire", target = "repertoire", qualifiedByName = "pomListToDto")
     })
     ConcertFinanceSummaryDto concertToFinanceSummary(Concert concert);
-/*
-private String concertTitle;
-
-    private BigDecimal ticketCost;
-*/
 
     //TransactionDto
     @Mappings({@Mapping( source = "date", target = "date", qualifiedByName = "dateToString"),
@@ -93,7 +88,6 @@ private String concertTitle;
     })
     ConcertDto concertToDto(Concert c);
 
-
     @Named("utcToDate")
     default Date utcToDate(String utc) throws ParseException { return DateUtils.utcToDate(utc); }
 
@@ -104,6 +98,27 @@ private String concertTitle;
 
     Concert dtoToConcert(ConcertDto dto);
 
+    @Mapping( target = "unlockingCountdownStarts", ignore = true)
     SeatOccupied seatDtoToSeatOccupied(SeatDto seat);
+
+    SeatDto occupiedToDto(SeatOccupied occupied);
+
+
+
+
+
+   /*
+    private int row;
+    private int position;*/
+   @Mappings({
+           @Mapping(source = "concert.date", target = "date", qualifiedByName = "dateToString"),
+           @Mapping(source = "concert.concertTitle", target = "concertTitle"),
+           @Mapping(source = "concert.ticketCost", target = "cost"),
+           @Mapping(source = "discount.name", target = "discount"),
+           @Mapping(source = "concert.concertRoom.concertRoomName", target = "concertRoom"),
+           @Mapping(source = "seat.row", target = "row"),
+           @Mapping(source = "seat.position", target = "position")
+   })
+    AndroidTicketDto ticketForAndroid(Ticket ticket);
 
 }

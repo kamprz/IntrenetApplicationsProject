@@ -114,6 +114,7 @@ public class ServiceDemo {
             purchase.setEmail("email@dot.com");
             purchase.setPaypalID("123aldsalskd" + random.nextInt(123456));
             purchase.setTimestamp(new Date());
+            purchase.setUserId(p + "dladklajafkaf");
             List<Ticket> tickets = new LinkedList<>();
             for (int i = 2; i < 9; i++)
             {

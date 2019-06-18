@@ -4,12 +4,17 @@ import com.paypal.api.payments.*;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import wat.semestr8.tim.dtos.AndroidTicketDto;
 import wat.semestr8.tim.dtos.PurchaseDto;
 import wat.semestr8.tim.dtos.TicketDto;
+import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
 import wat.semestr8.tim.entities.Concert;
 import wat.semestr8.tim.entities.Purchase;
 import wat.semestr8.tim.entities.Seat;
+import wat.semestr8.tim.entities.Ticket;
 import wat.semestr8.tim.exceptions.customexceptions.EntityNotFoundException;
 import wat.semestr8.tim.exceptions.customexceptions.PaymentTimeoutException;
 import wat.semestr8.tim.services.dataservices.*;
@@ -18,7 +23,6 @@ import wat.semestr8.tim.socket.SocketService;
 import wat.semestr8.tim.utils.PriceUtils;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,22 +33,29 @@ import java.util.stream.Collectors;
 @Service
 public class PayPalService
 {
-    private String clientId = "AZlsPDMXn18h5UYx4wcNvllVOZykMxQS2klA8gaxD7D6F99Z7FshHG1UsyRJwX5BtuoTkSmPYSWYrbVu";
-    private String clientSecret = "ECNslREpbmRdaFiMYq0ZCr051CzzPxTmmIUi2aT_F8_hs-GnqaIQ1Z0tuOVUU4MfhEIBpV9NDUN1vNNw";
+    @Value("${paypal.clientId}")
+    private String clientId;
+    @Value("${paypal.clientSecret}")
+    private String clientSecret;
+    @Value("${paypal.returnUrl}")
+    private String returnUrl;
+    @Value("${paypal.cancelUrl}")
+    private String cancelUrl;
+
+
     private ConcertService concertService;
     private DiscountService discountService;
-    private SeatService seatService;
     private TicketService ticketService;
     private PurchaseService purchaseService;
     private TicketSendingService ticketSendingService;
     private TransactionService transactionService;
     private SocketService socketService;
+    private EntityToDtoMapper mapper = Mappers.getMapper(EntityToDtoMapper.class);
 
-    public PayPalService(ConcertService concertService, DiscountService discountService, SeatService seatService, TicketService ticketService,
+    public PayPalService(ConcertService concertService, DiscountService discountService, TicketService ticketService,
                          PurchaseService purchaseService, TicketSendingService ticketSendingService, TransactionService transactionService, SocketService socketService) {
         this.concertService = concertService;
         this.discountService = discountService;
-        this.seatService = seatService;
         this.ticketService = ticketService;
         this.purchaseService = purchaseService;
         this.ticketSendingService = ticketSendingService;
@@ -71,8 +82,8 @@ public class PayPalService
         payment.setTransactions(transactions);
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4200/concerts");
-        redirectUrls.setReturnUrl("http://localhost:4200/payment-complete");
+        redirectUrls.setCancelUrl(cancelUrl);
+        redirectUrls.setReturnUrl(returnUrl);
         payment.setRedirectUrls(redirectUrls);
         Payment createdPayment;
 
@@ -95,7 +106,7 @@ public class PayPalService
         return null;
     }
 
-    public String completePayment(String paymentId, String PayerID, String token) throws PayPalRESTException, EntityNotFoundException, MessagingException, IOException, PaymentTimeoutException {
+    public List<AndroidTicketDto> completePayment(String paymentId, String PayerID, String token) throws PayPalRESTException, EntityNotFoundException, MessagingException, PaymentTimeoutException {
         Payment payment = new Payment();
         payment.setId(paymentId);
 
@@ -109,11 +120,15 @@ public class PayPalService
             Purchase purchase = purchaseService.getPurchaseByToken(token);
             purchaseService.setPurchasePaid(purchase);
             transactionService.addTransaction(purchase);
-            ticketSendingService.sendTickets(purchase.getIdPurchase());
+            try{
+                ticketSendingService.sendTickets(purchase.getIdPurchase());
+            }catch(IOException e){ throw new PayPalRESTException("Not valid attempt to pay for ticket"); }
             purchaseFinished(purchase);
-            return purchase.getEmail();
+            List<Ticket> allTicketsByPurchase = ticketService.getAllTicketsByPurchase(purchase);
+            System.out.println("ALL TICKETS: " + allTicketsByPurchase);
+            return allTicketsByPurchase.stream().map(mapper::ticketForAndroid).collect(Collectors.toList());
         }
-        return "Completing paypal payment unsuccesfull";
+        throw new PayPalRESTException("Completing paypal payment unsuccesfull");
     }
 
     private void createTickets(PurchaseDto purchaseDto, Purchase purchase) throws EntityNotFoundException {
@@ -124,16 +139,17 @@ public class PayPalService
         }
     }
 
-    private String getAmountToPay(PurchaseDto purchaseDto)
-    {
+    private String getAmountToPay(PurchaseDto purchaseDto) throws EntityNotFoundException {
         BigDecimal sum = new BigDecimal("0.00");
         sum.setScale(2,BigDecimal.ROUND_DOWN);
         BigDecimal standardTicketPrice = concertService.getConcertTicketPrice(purchaseDto.getConcertId());
         for(TicketDto ticket : purchaseDto.getTickets())
         {
-            int percentsOfDiscount = discountService.getDiscountPercentsByName(ticket.getDiscountName());
-            BigDecimal actualPrice = PriceUtils.getTicketPrice(standardTicketPrice,percentsOfDiscount);
-            sum = sum.add(actualPrice);
+            try{
+                int percentsOfDiscount = discountService.getDiscountPercentsByName(ticket.getDiscountName());
+                BigDecimal actualPrice = PriceUtils.getTicketPrice(standardTicketPrice,percentsOfDiscount);
+                sum = sum.add(actualPrice);
+            }catch(NullPointerException e){ throw new EntityNotFoundException("Nie ma takiej znizki."); }
         }
         return sum.setScale(2,BigDecimal.ROUND_DOWN).toString();
     }
@@ -153,15 +169,20 @@ public class PayPalService
         return redirectUrl.substring(redirectUrl.indexOf("token=") + "token=".length());
     }
 
-    private void purchaseFinished(Purchase purchase){
+    private void purchaseFinished(Purchase purchase) throws PayPalRESTException {
         List<Seat> seats;
         int idConcert;
         String userId;
 
-        idConcert = purchase.getTickets().get(0).getConcert().getIdConcert();
+        try{
+            idConcert = purchase.getTickets().get(0).getConcert().getIdConcert();
+
         userId = purchase.getUserId();
         seats = purchase.getTickets().stream().map(ticket -> ticket.getSeat()).collect(Collectors.toList());
 
         socketService.purchaseFinished(seats,idConcert,userId);
+        }catch(NullPointerException e) {
+            throw new PayPalRESTException("Not valid attempt to pay for ticket");
+        }
     }
 }
