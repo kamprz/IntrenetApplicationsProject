@@ -24,9 +24,7 @@ public class SocketController {
     }
 
     @MessageMapping("/socket.addUser")
-    public void addUser(SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", "aaaa");
-        //messagingTemplate.convertAndSend(subscribeAddress,message);
-        //return message;
+    public void addUser(SimpMessageHeaderAccessor headerAccessor, @Payload SocketMessage message) {
+        headerAccessor.getSessionAttributes().put("username", message.getAndroidId());
     }
 }

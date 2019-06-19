@@ -18,16 +18,12 @@ public class SocketDisconnectListener {
     //Napisać obsługę wiadomości disconnect i forward
     @EventListener
     public void handleWebSocketDisconnect (SessionDisconnectEvent event) {
-        /*
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String androidId = (String) headerAccessor.getSessionAttributes().get("id");
-        String typeStr = (String) headerAccessor.getSessionAttributes().get("type");
-        Integer concertId = Integer.parseInt((String)headerAccessor.getSessionAttributes().get("concertId"));
-        SocketMessage.MessageType type = SocketMessage.MessageType.valueOf(typeStr);
 
-        if( androidId != null && typeStr != null && concertId != null) {
-            socketService.disconnect(androidId, type, concertId);
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String userId = (String) headerAccessor.getSessionAttributes().get("username");
+
+        if(userId != null){
+            socketService.userSuddenlyDisconnected(userId);
         }
-         */
     }
 }

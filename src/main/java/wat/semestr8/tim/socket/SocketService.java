@@ -40,8 +40,7 @@ public class SocketService {
             unlockPlace(message);
             socketBroadcastingStation.broadcast(message);
         }
-        else
-            disconnect(message.getAndroidId(), message.getType(), message.getConcertId());
+        else disconnect(message.getAndroidId(), message.getType(), message.getConcertId());
     }
 
     public void disconnect(String androidId, SocketMessage.MessageType messageType, Integer concertId){
@@ -106,9 +105,9 @@ public class SocketService {
                 seatsOccupiedByConcertId.get(concertId).remove(seatOccupied);
             }
             //cleanUp seatsOccupiedByConcertIdAndUserId
-            seatsOccupiedByConcertIdAndUserId.get(concertId).remove(userId);
+            //seatsOccupiedByConcertIdAndUserId.get(concertId).remove(userId);
             //cleanUp concertIdByUserId
-            concertIdByUserId.get(userId).remove(concertId);
+            //concertIdByUserId.get(userId).remove(concertId);
 
             removeEmptyEntriesIfNeeded(concertId,userId);
 
@@ -116,7 +115,7 @@ public class SocketService {
             SocketMessage message = new SocketMessage();
             message.setConcertId(concertId);
             List<SeatDto> seats = new LinkedList<>();
-            seatsOccupied.forEach(rc -> seats.add(new SeatDto(rc.getRow(),rc.getCol())));
+            seatsOccupied.forEach(seat -> seats.add(new SeatDto(seat.getRow(),seat.getCol())));
             message.setSeat(seats);
             message.setType(SocketMessage.MessageType.UNLOCKED);
             return message;
@@ -190,5 +189,12 @@ public class SocketService {
 
     public HashSet<Integer> getConcertIdByUserId(String userId) {
         return concertIdByUserId.get(userId);
+    }
+
+    public void userSuddenlyDisconnected(String userId){
+        HashSet<Integer> concertIdByUserId = getConcertIdByUserId(userId);
+        for(Integer concertId : concertIdByUserId){
+            userDisconnectedForGood(userId,concertId);
+        }
     }
 }

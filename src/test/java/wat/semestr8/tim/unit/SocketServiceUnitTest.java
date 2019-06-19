@@ -17,7 +17,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SocketUnitTest {
+public class SocketServiceUnitTest {
     @Mock
     SocketBroadcaster broadcaster;
 
