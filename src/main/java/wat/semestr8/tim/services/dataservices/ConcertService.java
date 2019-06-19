@@ -111,7 +111,7 @@ public class ConcertService
 
     public List<ConcertDetailsDto> getConcertDetailDtoList()
     {
-        return concertRepo.getConcertDetailsList(new Date()).stream().map(c -> mapper.detailsToDto(c)).collect(Collectors.toList());
+        return concertRepo.getConcertDetailsList(new Date());
     }
 
     public void deleteNotApprovedConcert(int id) throws EntityNotFoundException, ConcertAlreadyApprovedException {

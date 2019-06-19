@@ -5,10 +5,10 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = ReadableDateValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Constraint(validatedBy = PurchaseValidator.class)
+@Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ReadableDateConstraint {
+public @interface PurchaseConstraint {
     String message() default "Purchase must have userId or email set.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

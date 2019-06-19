@@ -1,16 +1,13 @@
 package wat.semestr8.tim.dtos.mappers;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import wat.semestr8.tim.dtos.*;
 import wat.semestr8.tim.dtos.finance.ConcertFinanceSummaryDto;
 import wat.semestr8.tim.dtos.finance.TransactionDto;
 import wat.semestr8.tim.entities.*;
-import wat.semestr8.tim.model.ConcertDetails;
-import wat.semestr8.tim.model.SeatOccupied;
+import wat.semestr8.tim.socket.model.SeatOccupied;
 import wat.semestr8.tim.utils.DateUtils;
+import wat.semestr8.tim.utils.PriceUtils;
 
 
 import java.text.ParseException;
@@ -25,7 +22,7 @@ public interface EntityToDtoMapper {
     ConcertRoomDto concertRoomtoDto(ConcertRoom concertRoom);
 
     @Mapping( source = "date", target = "date", qualifiedByName = "dateToString")
-    ConcertDetailsDto detailsToDto(ConcertDetails details);
+    ConcertDetailsDto detailsToDto(ConcertDetailsWithDate details);
 
     //Discount
     Discount dtoToDiscount(DiscountDto dto);
@@ -104,21 +101,20 @@ public interface EntityToDtoMapper {
     SeatDto occupiedToDto(SeatOccupied occupied);
 
 
-
-
-
-   /*
-    private int row;
-    private int position;*/
    @Mappings({
            @Mapping(source = "concert.date", target = "date", qualifiedByName = "dateToString"),
            @Mapping(source = "concert.concertTitle", target = "concertTitle"),
-           @Mapping(source = "concert.ticketCost", target = "cost"),
+           @Mapping(target = "cost", ignore = true),
            @Mapping(source = "discount.name", target = "discount"),
            @Mapping(source = "concert.concertRoom.concertRoomName", target = "concertRoom"),
            @Mapping(source = "seat.row", target = "row"),
            @Mapping(source = "seat.position", target = "position")
    })
     AndroidTicketDto ticketForAndroid(Ticket ticket);
+
+    @AfterMapping
+    public default void treatAdditional(Ticket ticket, @MappingTarget AndroidTicketDto androidTicket) {
+        androidTicket.setCost(PriceUtils.getTicketPrice(ticket.getConcert().getTicketCost(),ticket.getDiscount().getPercents()).doubleValue());
+    }
 
 }

@@ -5,10 +5,10 @@ import wat.semestr8.tim.dtos.PurchaseDto;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ReadableDateValidator implements
-        ConstraintValidator<ReadableDateConstraint, PurchaseDto> {
+public class PurchaseValidator implements
+        ConstraintValidator<PurchaseConstraint, PurchaseDto> {
     @Override
-    public void initialize(ReadableDateConstraint contactNumber) {
+    public void initialize(PurchaseConstraint contactNumber) {
     }
 
     @Override

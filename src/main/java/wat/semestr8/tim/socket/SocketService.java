@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import wat.semestr8.tim.dtos.SeatDto;
 import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
 import wat.semestr8.tim.entities.Seat;
-import wat.semestr8.tim.model.SeatOccupied;
+import wat.semestr8.tim.socket.model.SeatOccupied;
 import wat.semestr8.tim.dtos.SocketMessage;
 import wat.semestr8.tim.utils.DateUtils;
 

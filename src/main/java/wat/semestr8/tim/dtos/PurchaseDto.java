@@ -1,6 +1,7 @@
 package wat.semestr8.tim.dtos;
 
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;

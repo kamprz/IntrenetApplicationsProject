@@ -37,7 +37,8 @@ public class PayPalController {
 
     @PostMapping(value = "/paypal/payment/make", produces = "application/json")
     public ResponseEntity makePayment(@Valid @RequestBody PurchaseDto purchaseDto) throws EntityNotFoundException, PayPalRESTException {
-        if(purchaseDto.getEmail() == null && purchaseDto.getUserId() == null) return ResponseEntity.unprocessableEntity().body("Purchase must have set email or userId field.");
+        if(purchaseDto.getEmail() == null && purchaseDto.getUserId() == null)
+            return ResponseEntity.unprocessableEntity().body("Purchase must have set email or userId field.");
         return ResponseEntity.ok().body(payPalService.createPayment(purchaseDto));
     }
 

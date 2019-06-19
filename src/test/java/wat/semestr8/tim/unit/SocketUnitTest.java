@@ -1,6 +1,5 @@
 package wat.semestr8.tim.unit;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,12 +9,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import wat.semestr8.tim.dtos.SeatDto;
 import wat.semestr8.tim.dtos.SocketMessage;
 import wat.semestr8.tim.dtos.mappers.EntityToDtoMapper;
-import wat.semestr8.tim.model.SeatOccupied;
 import wat.semestr8.tim.socket.SocketBroadcaster;
 import wat.semestr8.tim.socket.SocketService;
 
 import java.util.Arrays;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
